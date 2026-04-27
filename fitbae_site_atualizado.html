@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitbaê - Peça Já</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fitgreen: '#135c30',
+                        fityellow: '#fcb913',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Smooth scrolling para quando houver erro */
+        html { scroll-behavior: smooth; }
+        /* Esconder barra de rolagem mas manter funcionalidade */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+</head>
+<body class="min-h-screen bg-orange-50 font-sans pb-36 text-gray-800">
+
+    <!-- HEADER -->
+    <header class="bg-fitgreen text-white p-6 rounded-b-3xl shadow-lg sticky top-0 z-10">
+        <div class="max-w-md mx-auto flex flex-col items-center">
+            <div class="bg-white px-6 py-2 rounded-full mb-3 shadow-md flex items-center gap-2">
+                <i data-lucide="leaf" class="text-fitgreen" width="24" height="24"></i>
+                <h1 class="text-3xl font-extrabold tracking-tight text-fitgreen">
+                    fit<span class="text-fityellow">baê</span>
+                </h1>
+            </div>
+            <p class="text-sm font-medium opacity-90 text-center">Sua escolha saudável, rápida e deliciosa!</p>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-4 space-y-6 mt-4">
+
+        <!-- STATUS DA LOJA -->
+        <section id="store-status-card" class="bg-white p-4 rounded-2xl shadow-sm border border-orange-100">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="text-xs uppercase tracking-wider text-gray-400 font-bold">Status da loja</p>
+                    <h2 id="store-status-title" class="font-extrabold text-lg text-fitgreen">Aberto para pedidos</h2>
+                    <p id="store-status-desc" class="text-xs text-gray-500">Você pode montar e enviar seu pedido pelo WhatsApp.</p>
+                </div>
+                <div id="store-status-pill" class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">ABERTO</div>
+            </div>
+        </section>
+
+        
+        <!-- INDICADOR DE CARRINHO (Oculto por padrão) -->
+        <div id="cart-indicator" class="hidden bg-green-100 text-green-800 p-3 rounded-xl flex items-center justify-between border border-green-200">
+            <span class="font-bold flex items-center gap-2">
+                <i data-lucide="shopping-bag" width="18" height="18"></i>
+                <span id="cart-count-text">0 lanches adicionados</span>
+            </span>
+            <span id="cart-total-text" class="text-sm font-semibold">R$ 0,00</span>
+        </div>
+
+        <!-- SOBRE O FITBAÊ -->
+        <section class="bg-white p-5 rounded-2xl shadow-sm border border-orange-100">
+            <div class="flex items-center gap-2 mb-2 text-fitgreen">
+                <i data-lucide="info" width="20" height="20"></i>
+                <h2 class="font-bold text-lg">O que é o Fitbaê?</h2>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                O <strong>Fitbaê</strong> é a sua nova forma de comer bem sem abrir mão do sabor. 
+                Você monta o seu sanduíche ideal, escolhendo bases nutritivas, proteínas e saladas à vontade.
+            </p>
+            <div class="mt-3 inline-block bg-orange-100 text-orange-800 text-xs px-3 py-1 rounded-full font-semibold">
+                Lanche Base: R$ 22,90
+            </div>
+        </section>
+
+        <!-- MENSAGEM DE ERRO (Oculta por padrão) -->
+        <div id="error-container" class="hidden bg-red-50 text-red-600 p-4 rounded-xl flex items-start gap-3 border border-red-200 animate-pulse">
+            <i data-lucide="alert-circle" width="20" height="20" class="shrink-0 mt-0.5"></i>
+            <p id="error-msg" class="text-sm font-medium"></p>
+        </div>
+
+        <div class="bg-white p-1 rounded-2xl shadow-sm border border-gray-100 mb-4">
+            <h2 id="current-sandwich-title" class="text-center py-2 text-gray-400 text-sm font-bold uppercase tracking-wider">
+                Monte seu Lanche
+            </h2>
+        </div>
+
+        <!-- PASSO 1: PÃO -->
+        <section>
+            <div class="mb-3">
+                <h3 class="font-bold text-xl text-fitgreen flex items-center gap-2">
+                    <span class="bg-fityellow text-fitgreen w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
+                    Escolha a Base
+                </h3>
+                <p class="text-xs text-gray-500">Escolha 1 opção</p>
+            </div>
+            <div id="breads-container" class="grid grid-cols-2 gap-2"></div>
+        </section>
+
+        <!-- PASSO 2: PROTEÍNA -->
+        <section>
+            <div class="mb-3">
+                <h3 class="font-bold text-xl text-fitgreen flex items-center gap-2">
+                    <span class="bg-fityellow text-fitgreen w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
+                    Escolha a Proteína Principal
+                </h3>
+                <p class="text-xs text-gray-500">Escolha 1 opção (Já inclusa)</p>
+            </div>
+            <div id="proteins-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+        </section>
+
+        <!-- PASSO 3: SALADAS -->
+        <section>
+            <div class="mb-3">
+                <h3 class="font-bold text-xl text-fitgreen flex items-center gap-2">
+                    <span class="bg-fityellow text-fitgreen w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span>
+                    Saladas e Complementos
+                </h3>
+                <p class="text-xs text-green-600 font-semibold bg-green-100 inline-block px-2 py-0.5 rounded-md mt-1">À Vontade (Livres)</p>
+            </div>
+            <div id="salads-container" class="grid grid-cols-2 gap-2"></div>
+        </section>
+
+        <!-- PASSO 4: MOLHO PRINCIPAL -->
+        <section>
+            <div class="mb-3">
+                <h3 class="font-bold text-xl text-fitgreen flex items-center gap-2">
+                    <span class="bg-fityellow text-fitgreen w-6 h-6 rounded-full flex items-center justify-center text-sm">4</span>
+                    Escolha o Molho Principal
+                </h3>
+                <p class="text-xs text-gray-500">Escolha 1 opção (Já incluso)</p>
+            </div>
+            <div id="sauces-container" class="flex flex-col gap-2"></div>
+        </section>
+
+        <!-- PASSO 5: UPSELLS & EXTRAS -->
+        <section class="bg-fitgreen/5 p-4 rounded-2xl border border-fitgreen/10">
+            <div class="mb-4">
+                <h3 class="font-bold text-xl text-fitgreen">Turbine seu Lanche</h3>
+                <p class="text-xs text-gray-600">Adicionais pagos</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Queijos -->
+                <div>
+                    <div class="flex justify-between items-end mb-2 border-b border-gray-200 pb-1">
+                        <h4 class="text-sm font-bold text-gray-700">Queijo (+ R$ 4,00)</h4>
+                        <span class="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded">Máx 1</span>
+                    </div>
+                    <div id="cheeses-container" class="flex flex-col gap-2"></div>
+                </div>
+
+                <!-- Proteína Extra -->
+                <div>
+                    <h4 class="text-sm font-bold text-gray-700 mb-2 border-b border-gray-200 pb-1">Proteína Extra (+ R$ 7,00)</h4>
+                    <div id="extra-proteins-container" class="flex flex-col gap-2"></div>
+                </div>
+
+                <!-- Molho Extra -->
+                <div>
+                    <h4 class="text-sm font-bold text-gray-700 mb-2 border-b border-gray-200 pb-1">Molho Extra (+ R$ 2,00)</h4>
+                    <div id="extra-sauces-container" class="flex flex-col gap-2"></div>
+                </div>
+
+                <!-- Extras Premium -->
+                <div>
+                    <h4 class="text-sm font-bold text-gray-700 mb-2 border-b border-gray-200 pb-1">Extras Premium (+ R$ 3,00)</h4>
+                    <div id="premium-container" class="flex flex-col gap-2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DADOS DO CLIENTE -->
+        <section class="bg-white p-5 rounded-2xl shadow-sm border border-orange-100">
+            <div class="mb-4">
+                <h3 class="font-bold text-xl text-fitgreen flex items-center gap-2">
+                    <span class="bg-fityellow text-fitgreen w-6 h-6 rounded-full flex items-center justify-center text-sm">6</span>
+                    Dados do Pedido
+                </h3>
+                <p class="text-xs text-gray-500">Preencha para agilizar o atendimento</p>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-gray-600">Nome</label>
+                    <input id="customer-name" type="text" placeholder="Seu nome" class="w-full mt-1 p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-fityellow">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-gray-600">Como deseja receber?</label>
+                    <div class="grid grid-cols-2 gap-2 mt-1">
+                        <button id="delivery-btn" onclick="setOrderMethod('delivery')" class="p-3 rounded-xl text-sm font-bold border bg-fitgreen text-white border-fitgreen">Entrega</button>
+                        <button id="pickup-btn" onclick="setOrderMethod('pickup')" class="p-3 rounded-xl text-sm font-bold border bg-white text-gray-700 border-gray-200">Retirar no local</button>
+                    </div>
+                </div>
+
+                <div id="address-wrapper">
+                    <label class="text-xs font-bold text-gray-600">Endereço</label>
+                    <textarea id="customer-address" placeholder="Rua, número, bairro e ponto de referência" class="w-full mt-1 p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-fityellow min-h-[82px]"></textarea>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-gray-600">Observações</label>
+                    <textarea id="customer-notes" placeholder="Ex.: sem cebola, cortar ao meio, troco para R$ 50..." class="w-full mt-1 p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-fityellow min-h-[70px]"></textarea>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER FIXO - AÇÕES DO PEDIDO -->
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] p-4 z-50 rounded-t-3xl">
+        <div class="max-w-md mx-auto space-y-3">
+            
+            <div class="flex justify-between items-center text-sm px-1">
+                <span class="text-gray-500 font-medium">Subtotal deste lanche:</span>
+                <span id="current-subtotal" class="font-bold text-gray-700">R$ 22,90</span>
+            </div>
+
+            <button 
+                onclick="handleCancelOrder()"
+                class="w-full bg-red-50 border border-red-200 text-red-600 py-2 rounded-xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
+            >
+                <i data-lucide="trash-2" width="16" height="16"></i>
+                Cancelar pedido
+            </button>
+
+            <div class="flex gap-2">
+                <!-- Botão Adicionar Outro -->
+                <button 
+                    onclick="handleAddAnother()"
+                    class="flex-1 bg-green-50 border border-fitgreen text-fitgreen py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                >
+                    <i data-lucide="plus" width="18" height="18"></i>
+                    <span class="hidden sm:inline">Adicionar</span> Outro
+                </button>
+
+                <!-- Botão Finalizar -->
+                <button 
+                    onclick="handleFinishOrder()"
+                    class="flex-[2] bg-fityellow hover:bg-yellow-500 text-fitgreen py-3 px-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform"
+                >
+                    <i data-lucide="shopping-bag" width="20" height="20"></i>
+                    Finalizar (<span id="grand-total">R$ 22,90</span>)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT Pura -->
+    <script>
+        // Inicializa ícones estáticos
+        lucide.createIcons();
+
+        // --- DADOS DO CARDÁPIO ---
+        const BASE_PRICE = 22.90;
+
+        // ALTERE PARA false QUANDO A LOJA ESTIVER FECHADA
+        const STORE_OPEN = true;
+
+        // Preços fáceis de ajustar depois de conferir no mercado
+        const PRICES = {
+            cheese: 4.00,
+            extraProtein: 7.00,
+            extraSauce: 2.00,
+            premium: 3.00
+        };
+
+        let orderMethod = 'delivery';
+        
+        const menuData = {
+            breads: ["Pão branco macio", "Pão italiano", "Pão integral", "Pão 9 grãos", "Rap10 integral", "Rap10 low carb", "Pão de aveia", "Pão sem glúten (premium)", "Tapioca prensada"],
+            proteins: ["Sem proteína", "Frango grelhado", "Frango desfiado", "Carne moída", "Atum cremoso leve"],
+            salads: ["Alface americana", "Rúcula", "Tomate", "Pepino", "Cebola roxa", "Milho", "Azeitona", "Picles"],
+            sauces: ["Sem molho", "Mostarda e mel", "Barbecue", "Caesar"],
+            cheeses: ["Queijo prato", "Muçarela"],
+            premium: ["Ovo cozido", "Ricota"]
+        };
+
+        // Ícones SVG para evitar chamar lucide várias vezes dinamicamente
+        const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>`;
+
+        // --- ESTADO DA APLICAÇÃO ---
+        let cart = [];
+        
+        let state = {
+            bread: null,
+            protein: null,
+            salads: [],
+            sauce: null,
+            cheese: null,
+            extraProteins: [],
+            extraSauces: [],
+            premium: []
+        };
+
+        // --- FUNÇÕES DE ATUALIZAÇÃO DE ESTADO ---
+        function setSingle(category, value) {
+            if (state[category] === value && category === 'cheese') {
+                state[category] = null; // Permite desmarcar o queijo
+            } else {
+                state[category] = value;
+            }
+            hideError();
+            renderAll();
+        }
+
+        function toggleMultiple(category, value) {
+            const index = state[category].indexOf(value);
+            if (index > -1) {
+                state[category].splice(index, 1); // Remove se já existe
+            } else {
+                state[category].push(value); // Adiciona se não existe
+            }
+            hideError();
+            renderAll();
+        }
+
+        function formatCurrency(value) {
+            return "R$ " + value.toFixed(2).replace('.', ',');
+        }
+
+        function showError(msg) {
+            document.getElementById('error-msg').innerText = msg;
+            document.getElementById('error-container').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function hideError() {
+            document.getElementById('error-container').classList.add('hidden');
+        }
+
+        // --- CÁLCULOS ---
+        function getCurrentTotal() {
+            let total = BASE_PRICE;
+            if (state.cheese) total += PRICES.cheese;
+            total += state.extraProteins.length * PRICES.extraProtein;
+            total += state.extraSauces.length * PRICES.extraSauce;
+            total += state.premium.length * PRICES.premium;
+            return total;
+        }
+
+        function getGrandTotal() {
+            let total = cart.reduce((acc, item) => acc + item.total, 0);
+            // Soma o lanche atual se ele tiver pelo menos 1 item selecionado
+            if (state.bread || state.protein || state.sauce || state.salads.length > 0) {
+                total += getCurrentTotal();
+            } else if (cart.length === 0) {
+                total += getCurrentTotal(); // Mostra base se nada foi selecionado e carrinho vazio
+            }
+            return total;
+        }
+
+        function setOrderMethod(method) {
+            orderMethod = method;
+            const isDelivery = method === 'delivery';
+            document.getElementById('address-wrapper').classList.toggle('hidden', !isDelivery);
+
+            document.getElementById('delivery-btn').className = isDelivery
+                ? "p-3 rounded-xl text-sm font-bold border bg-fitgreen text-white border-fitgreen"
+                : "p-3 rounded-xl text-sm font-bold border bg-white text-gray-700 border-gray-200";
+
+            document.getElementById('pickup-btn').className = !isDelivery
+                ? "p-3 rounded-xl text-sm font-bold border bg-fitgreen text-white border-fitgreen"
+                : "p-3 rounded-xl text-sm font-bold border bg-white text-gray-700 border-gray-200";
+        }
+
+        function updateStoreStatus() {
+            const title = document.getElementById('store-status-title');
+            const desc = document.getElementById('store-status-desc');
+            const pill = document.getElementById('store-status-pill');
+
+            if (STORE_OPEN) {
+                title.innerText = "Aberto para pedidos";
+                desc.innerText = "Você pode montar e enviar seu pedido pelo WhatsApp.";
+                pill.innerText = "ABERTO";
+                pill.className = "px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700";
+            } else {
+                title.innerText = "Fechado no momento";
+                desc.innerText = "A loja não está recebendo novos pedidos agora.";
+                pill.innerText = "FECHADO";
+                pill.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700";
+            }
+        }
+
+        // --- RENDERIZAÇÃO DA INTERFACE ---
+        function renderAll() {
+            renderBreads();
+            renderProteins();
+            renderSalads();
+            renderSauces();
+            renderUpsells();
+            updateFootersAndHeaders();
+        }
+
+        function renderBreads() {
+            const container = document.getElementById('breads-container');
+            container.innerHTML = menuData.breads.map(item => `
+                <button onclick="setSingle('bread', '${item}')" class="p-3 rounded-xl text-sm font-medium text-left transition-all border ${state.bread === item ? 'bg-fitgreen text-white border-fitgreen shadow-md' : 'bg-white text-gray-700 border-gray-200 hover:border-fitgreen'}">
+                    ${item}
+                </button>
+            `).join('');
+        }
+
+        function renderProteins() {
+            const container = document.getElementById('proteins-container');
+            container.innerHTML = menuData.proteins.map(item => `
+                <button onclick="setSingle('protein', '${item}')" class="p-3 rounded-xl text-sm font-medium flex justify-between items-center transition-all border ${state.protein === item ? 'bg-fitgreen text-white border-fitgreen shadow-md' : 'bg-white text-gray-700 border-gray-200 hover:border-fitgreen'}">
+                    ${item}
+                    ${state.protein === item ? checkIcon : ''}
+                </button>
+            `).join('');
+        }
+
+        function renderSalads() {
+            const container = document.getElementById('salads-container');
+            container.innerHTML = menuData.salads.map(item => {
+                const isSelected = state.salads.includes(item);
+                return `
+                <button onclick="toggleMultiple('salads', '${item}')" class="p-3 rounded-xl text-sm font-medium flex justify-start items-center gap-2 transition-all border ${isSelected ? 'bg-green-50 border-green-500 text-green-800' : 'bg-white text-gray-600 border-gray-200'}">
+                    <div class="w-4 h-4 rounded-sm border flex items-center justify-center ${isSelected ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300'}">
+                        ${isSelected ? checkIcon : ''}
+                    </div>
+                    ${item}
+                </button>
+                `;
+            }).join('');
+        }
+
+        function renderSauces() {
+            const container = document.getElementById('sauces-container');
+            container.innerHTML = menuData.sauces.map(item => `
+                <button onclick="setSingle('sauce', '${item}')" class="p-3 rounded-xl text-sm font-medium flex justify-between items-center transition-all border ${state.sauce === item ? 'bg-fitgreen text-white border-fitgreen shadow-md' : 'bg-white text-gray-700 border-gray-200 hover:border-fitgreen'}">
+                    ${item}
+                    ${state.sauce === item ? checkIcon : ''}
+                </button>
+            `).join('');
+        }
+
+        function renderUpsells() {
+            // Queijos
+            document.getElementById('cheeses-container').innerHTML = menuData.cheeses.map(item => {
+                const isSelected = state.cheese === item;
+                return `
+                <button onclick="setSingle('cheese', '${item}')" class="p-3 rounded-xl text-sm font-medium flex justify-between items-center transition-all border bg-white ${isSelected ? 'border-fityellow ring-1 ring-fityellow' : 'border-gray-200'}">
+                    <span class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full border flex items-center justify-center ${isSelected ? 'bg-fityellow border-fityellow' : 'border-gray-300'}">
+                            ${isSelected ? '<div class="w-1.5 h-1.5 bg-fitgreen rounded-full"></div>' : ''}
+                        </div>
+                        ${item}
+                    </span>
+                </button>
+                `;
+            }).join('');
+
+            // Proteínas Extras
+            document.getElementById('extra-proteins-container').innerHTML = menuData.proteins.map(item => {
+                const isSelected = state.extraProteins.includes(item);
+                return `
+                <button onclick="toggleMultiple('extraProteins', '${item}')" class="p-3 rounded-xl text-sm font-medium flex justify-between items-center transition-all border bg-white ${isSelected ? 'border-fityellow ring-1 ring-fityellow' : 'border-gray-200'}">
+                    <span class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-sm border flex items-center justify-center text-fitgreen ${isSelected ? 'bg-fityellow border-fityellow' : 'border-gray-300'}">
+                            ${isSelected ? checkIcon : ''}
+                        </div>
+                        ${item}
+                    </span>
+                </button>
+                `;
+            }).join('');
+
+            // Molhos Extras
+            document.getElementById('extra-sauces-container').innerHTML = menuData.sauces.map(item => {
+                const isSelected = state.extraSauces.includes(item);
+                return `
+                <button onclick="toggleMultiple('extraSauces', '${item}')" class="p-3 rounded-xl text-sm font-medium flex justify-between items-center transition-all border bg-white ${isSelected ? 'border-fityellow ring-1 ring-fityellow' : 'border-gray-200'}">
+                    <span class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-sm border flex items-center justify-center text-fitgreen ${isSelected ? 'bg-fityellow border-fityellow' : 'border-gray-300'}">
+                            ${isSelected ? checkIcon : ''}
+                        </div>
+                        ${item}
+                    </span>
+                </button>
+                `;
+            }).join('');
+
+            // Premium
+            document.getElementById('premium-container').innerHTML = menuData.premium.map(item => {
+                const isSelected = state.premium.includes(item);
+                return `
+                <button onclick="toggleMultiple('premium', '${item}')" class="p-3 rounded-xl text-sm font-medium flex justify-between items-center transition-all border bg-white ${isSelected ? 'border-fityellow ring-1 ring-fityellow' : 'border-gray-200'}">
+                    <span class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-sm border flex items-center justify-center text-fitgreen ${isSelected ? 'bg-fityellow border-fityellow' : 'border-gray-300'}">
+                            ${isSelected ? checkIcon : ''}
+                        </div>
+                        ${item}
+                    </span>
+                </button>
+                `;
+            }).join('');
+        }
+
+        function updateFootersAndHeaders() {
+            // Atualiza valores financeiros
+            document.getElementById('current-subtotal').innerText = formatCurrency(getCurrentTotal());
+            document.getElementById('grand-total').innerText = formatCurrency(getGrandTotal());
+
+            // Atualiza barra de carrinho e títulos
+            const cartIndicator = document.getElementById('cart-indicator');
+            const titleEl = document.getElementById('current-sandwich-title');
+            
+            if (cart.length > 0) {
+                cartIndicator.classList.remove('hidden');
+                document.getElementById('cart-count-text').innerText = `${cart.length} ${cart.length === 1 ? 'lanche adicionado' : 'lanches adicionados'}`;
+                document.getElementById('cart-total-text').innerText = formatCurrency(cart.reduce((acc, item) => acc + item.total, 0));
+                titleEl.innerText = `Montando o ${cart.length + 1}º Lanche`;
+            } else {
+                cartIndicator.classList.add('hidden');
+                titleEl.innerText = "Monte seu Lanche";
+            }
+        }
+
+        // --- AÇÕES PRINCIPAIS ---
+        function resetCurrentSandwich() {
+            resetCurrentSandwich();
+        }
+
+        function handleCancelOrder() {
+            cart = [];
+            resetCurrentSandwich();
+            document.getElementById('customer-name').value = "";
+            document.getElementById('customer-address').value = "";
+            document.getElementById('customer-notes').value = "";
+            hideError();
+            renderAll();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleAddAnother() {
+            if (!state.bread || !state.protein || !state.sauce) {
+                showError("Termine de montar este lanche (escolha pão, proteína e molho) antes de adicionar outro.");
+                return;
+            }
+
+            // Salva no carrinho
+            cart.push({ ...state, total: getCurrentTotal() });
+            
+            // Reseta o estado atual
+            resetCurrentSandwich();
+            
+            hideError();
+            renderAll();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleFinishOrder() {
+            if (!STORE_OPEN) {
+                showError("A loja está fechada no momento e não está recebendo novos pedidos.");
+                return;
+            }
+
+            let finalCart = [...cart];
+            
+            // Verifica se o lanche atual está preenchido e válido para ser incluído
+            if (state.bread && state.protein && state.sauce) {
+                finalCart.push({ ...state, total: getCurrentTotal() });
+            } else if (finalCart.length === 0) {
+                showError("Por favor, escolha pelo menos 1 pão, 1 proteína e 1 molho para montar seu lanche.");
+                return;
+            }
+
+            const customerName = document.getElementById('customer-name').value.trim();
+            const customerAddress = document.getElementById('customer-address').value.trim();
+            const customerNotes = document.getElementById('customer-notes').value.trim();
+
+            if (!customerName) {
+                showError("Informe seu nome antes de finalizar o pedido.");
+                return;
+            }
+
+            if (orderMethod === 'delivery' && !customerAddress) {
+                showError("Informe o endereço ou selecione retirar no local.");
+                return;
+            }
+
+            let message = "Meu pedido\n\n";
+            message += `*Cliente:* ${customerName}\n`;
+            message += `*Forma de recebimento:* ${orderMethod === 'delivery' ? 'Entrega' : 'Retirar no local'}\n`;
+            if (orderMethod === 'delivery') message += `*Endereço:* ${customerAddress}\n`;
+            if (customerNotes) message += `*Observações:* ${customerNotes}\n`;
+            message += "\n";
+
+            let grandTotal = 0;
+
+            finalCart.forEach((item, index) => {
+                if (finalCart.length > 1) {
+                    message += `*Lanche ${index + 1}:*\n`;
+                }
+                message += `--${item.bread}--\n`;
+                message += `--${item.protein}--\n`;
+                item.salads.forEach(s => message += `--${s}--\n`);
+                message += `--${item.sauce}--\n`;
+                
+                if (item.cheese) message += `--Queijo ${item.cheese}--\n`;
+                item.extraProteins.forEach(p => message += `--Extra: ${p}--\n`);
+                item.extraSauces.forEach(m => message += `--Extra: ${m}--\n`);
+                item.premium.forEach(p => message += `--Extra: ${p}--\n`);
+                
+                if (finalCart.length > 1) {
+                    message += `_Subtotal: ${formatCurrency(item.total)}_\n\n`;
+                }
+                grandTotal += item.total;
+            });
+
+            message += `\n*Total a Pagar:* ${formatCurrency(grandTotal)}`;
+
+            const phoneNumber = "5519997577263";
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // --- INICIAR ---
+        updateStoreStatus();
+        setOrderMethod('delivery');
+        renderAll();
+
+    </script>
+</body>
+</html>
