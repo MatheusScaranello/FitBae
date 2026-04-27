@@ -704,51 +704,54 @@ let subtotal = finalCart.reduce((acc, item) => acc + item.total, 0);
 let deliveryFee = orderMethod === "delivery" ? DELIVERY_FEE : 0;
 let total = subtotal + deliveryFee;
 
-let message = "*Pedido Fitbaê*";
+// Construindo a mensagem com formatação limpa e quebras de linha (\n)
+let message = "*PEDIDO FITBAÊ*\n";
+message += "-----------------------------------\n\n";
 
-message += `*Cliente:* ${customerName}*`;
-message += `*Forma de recebimento:* ${orderMethod === "delivery" ? "Entrega" : "Retirar no local"}`;
+message += "*DADOS DO CLIENTE*\n";
+message += `*Nome:* ${customerName}\n`;
+message += `*Recebimento:* ${orderMethod === "delivery" ? "Entrega" : "Retirar no local"}\n`;
 
 if(orderMethod === "delivery"){
-message += `*Endereço:* ${address}*`;
-message += `*Taxa de entrega:* ${formatCurrency(DELIVERY_FEE)}*`;
+    message += `*Endereço:* ${address}\n`;
 }
 
 if(notes){
-message += `*Observações:* ${notes}*`;
+    message += `*Observações:* ${notes}\n`;
 }
 
-message += "\\n";
+message += "\n-----------------------------------\n\n";
+message += "*ITENS DO PEDIDO*\n\n";
 
 finalCart.forEach((item, index) => {
-message += `*Lanche ${index + 1}:*`;
-message += `Base: ${item.bread}`;
-message += `Proteína: ${item.protein}`;
-message += `Saladas: ${item.salads.join(", ")}`;
-message += `Molho: ${item.sauce}`;
+    message += `*Lanche ${index + 1}*\n`;
+    message += `- Base: ${item.bread}\n`;
+    message += `- Proteína: ${item.protein}\n`;
+    message += `- Saladas: ${item.salads.join(", ")}\n`;
+    message += `- Molho: ${item.sauce}\n`;
 
-if(item.cheese) message += `Queijo: ${item.cheese}`;
-if(item.extraProteins.length) message += `Proteínas extras: ${item.extraProteins.join(", ")}`;
-if(item.extraSauces.length) message += `Molhos extras: ${item.extraSauces.join(", ")}`;
-if(item.premium.length) message += `Extras premium: ${item.premium.join(", ")}`;
+    if(item.cheese) message += `- Queijo: ${item.cheese}\n`;
+    if(item.extraProteins.length) message += `- Prot. extras: ${item.extraProteins.join(", ")}\n`;
+    if(item.extraSauces.length) message += `- Molhos extras: ${item.extraSauces.join(", ")}\n`;
+    if(item.premium.length) message += `- Extras premium: ${item.premium.join(", ")}\n`;
 
-message += `Subtotal do lanche: ${formatCurrency(item.total)}`;
+    message += `_Subtotal do lanche: ${formatCurrency(item.total)}_\n\n`;
 });
 
-message += `*Subtotal:* ${formatCurrency(subtotal)}`;
+message += "-----------------------------------\n\n";
+message += "*RESUMO DOS VALORES*\n";
+message += `Subtotal: ${formatCurrency(subtotal)}\n`;
 
 if(orderMethod === "delivery"){
-message += `*Entrega:* ${formatCurrency(DELIVERY_FEE)}`;
+    message += `Taxa de entrega: ${formatCurrency(DELIVERY_FEE)}\n`;
 }
 
-message += `*Total a pagar:* ${formatCurrency(total)}`;
+message += `\n*TOTAL A PAGAR: ${formatCurrency(total)}*`;
 
 const phoneNumber = "5519999270698";
 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
 window.open(whatsappUrl, "_blank");
-}
-
 setOrderMethod("delivery");
 renderAll();
 </script>
