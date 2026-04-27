@@ -59,6 +59,10 @@ ABERTO
 </div>
 </section>
 
+<div id="error-container" class="hidden bg-red-50 text-red-600 p-4 rounded-xl border border-red-200">
+<p id="error-msg" class="text-sm font-medium"></p>
+</div>
+
 <section class="bg-yellow-100 border border-yellow-300 text-yellow-900 p-4 rounded-2xl font-bold text-center">
 🚚 Entrega fixa: R$ 10,00
 </section>
@@ -84,10 +88,6 @@ Você monta o seu sanduíche ideal, escolhendo bases nutritivas, proteínas, sal
 Lanche Base: R$ 22,90
 </div>
 </section>
-
-<div id="error-container" class="hidden bg-red-50 text-red-600 p-4 rounded-xl border border-red-200">
-<p id="error-msg" class="text-sm font-medium"></p>
-</div>
 
 <div class="bg-white p-1 rounded-2xl shadow-sm border border-gray-100">
 <h2 id="current-sandwich-title" class="text-center py-2 text-gray-400 text-sm font-bold uppercase tracking-wider">
@@ -703,43 +703,43 @@ let subtotal = finalCart.reduce((acc, item) => acc + item.total, 0);
 let deliveryFee = orderMethod === "delivery" ? DELIVERY_FEE : 0;
 let total = subtotal + deliveryFee;
 
-let message = "🍔 *Pedido Fitbaê*\\n\\n";
+let message = "*Pedido Fitbaê*";
 
-message += `*Cliente:* ${customerName}\\n`;
-message += `*Forma de recebimento:* ${orderMethod === "delivery" ? "Entrega" : "Retirar no local"}\\n`;
+message += `*Cliente:* ${customerName}*`;
+message += `*Forma de recebimento:* ${orderMethod === "delivery" ? "Entrega" : "Retirar no local"}`;
 
 if(orderMethod === "delivery"){
-message += `*Endereço:* ${address}\\n`;
-message += `*Taxa de entrega:* ${formatCurrency(DELIVERY_FEE)}\\n`;
+message += `*Endereço:* ${address}*`;
+message += `*Taxa de entrega:* ${formatCurrency(DELIVERY_FEE)}*`;
 }
 
-message += `*Pagamento:* PIX\\n`;
+message += `*Pagamento:*`;
 
 if(notes){
-message += `*Observações:* ${notes}\\n`;
+message += `*Observações:* ${notes}*`;
 }
 
 message += "\\n";
 
 finalCart.forEach((item, index) => {
-message += `*Lanche ${index + 1}:*\\n`;
-message += `Base: ${item.bread}\\n`;
-message += `Proteína: ${item.protein}\\n`;
-message += `Saladas: ${item.salads.join(", ")}\\n`;
-message += `Molho: ${item.sauce}\\n`;
+message += `*Lanche ${index + 1}:*`;
+message += `Base: ${item.bread}`;
+message += `Proteína: ${item.protein}`;
+message += `Saladas: ${item.salads.join(", ")}`;
+message += `Molho: ${item.sauce}`;
 
-if(item.cheese) message += `Queijo: ${item.cheese}\\n`;
-if(item.extraProteins.length) message += `Proteínas extras: ${item.extraProteins.join(", ")}\\n`;
-if(item.extraSauces.length) message += `Molhos extras: ${item.extraSauces.join(", ")}\\n`;
-if(item.premium.length) message += `Extras premium: ${item.premium.join(", ")}\\n`;
+if(item.cheese) message += `Queijo: ${item.cheese}`;
+if(item.extraProteins.length) message += `Proteínas extras: ${item.extraProteins.join(", ")}`;
+if(item.extraSauces.length) message += `Molhos extras: ${item.extraSauces.join(", ")}`;
+if(item.premium.length) message += `Extras premium: ${item.premium.join(", ")}`;
 
-message += `Subtotal do lanche: ${formatCurrency(item.total)}\\n\\n`;
+message += `Subtotal do lanche: ${formatCurrency(item.total)}`;
 });
 
-message += `*Subtotal:* ${formatCurrency(subtotal)}\\n`;
+message += `*Subtotal:* ${formatCurrency(subtotal)}`;
 
 if(orderMethod === "delivery"){
-message += `*Entrega:* ${formatCurrency(DELIVERY_FEE)}\\n`;
+message += `*Entrega:* ${formatCurrency(DELIVERY_FEE)}`;
 }
 
 message += `*Total a pagar:* ${formatCurrency(total)}\\n`;
