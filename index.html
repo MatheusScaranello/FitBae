@@ -714,8 +714,6 @@ message += `*Endereço:* ${address}*`;
 message += `*Taxa de entrega:* ${formatCurrency(DELIVERY_FEE)}*`;
 }
 
-message += `*Pagamento:*`;
-
 if(notes){
 message += `*Observações:* ${notes}*`;
 }
@@ -743,8 +741,7 @@ if(orderMethod === "delivery"){
 message += `*Entrega:* ${formatCurrency(DELIVERY_FEE)}`;
 }
 
-message += `*Total a pagar:* ${formatCurrency(total)}\\n`;
-message += `*Pagamento:* PIX`;
+message += `*Total a pagar:* ${formatCurrency(total)}`;
 
 const phoneNumber = "5519999270698";
 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
