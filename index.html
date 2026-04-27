@@ -671,41 +671,32 @@ const MENU = {
         { id: 'sl1', name: 'Alface americana' },
         { id: 'sl2', name: 'Rúcula fresca' },
         { id: 'sl3', name: 'Tomate em rodelas' },
-        { id: 'sl4', name: 'Pepino fatiado' },
         { id: 'sl5', name: 'Cebola roxa' },
         { id: 'sl6', name: 'Milho verde' },
         { id: 'sl7', name: 'Azeitona fatiada' },
         { id: 'sl8', name: 'Picles' },
-        { id: 'sl9', name: 'Cenoura ralada' }
+        { id: 'sl9', name: 'Sem salada' }
     ],
     sauces: [
         { id: 'sc1', name: 'Mostarda e Mel', desc: 'Doce e picante' },
         { id: 'sc2', name: 'Barbecue', desc: 'Sabor defumado' },
         { id: 'sc3', name: 'Maionese Verde', desc: 'Ervas finas' },
-        { id: 'sc4', name: 'Iogurte com Hortelã', desc: 'Refrescante' },
         { id: 'sc5', name: 'Sem molho', desc: 'Natural' }
     ],
     cheeses: [
         { id: 'ch1', name: 'Queijo Prato', price: 4.00 },
         { id: 'ch2', name: 'Muçarela', price: 4.00 },
-        { id: 'ch3', name: 'Cheddar Cremoso', price: 5.00 }
     ],
     premium: [
         { id: 'pr1', name: 'Ovo cozido', price: 3.00 },
-        { id: 'pr2', name: 'Ricota temperada', price: 3.00 },
-        { id: 'pr3', name: 'Bacon fit', price: 4.00 }
+        { id: 'pr2', name: 'Ricota', price: 3.00 },
     ],
     drinks: [
         { id: 'd1', name: 'Coca-Cola Zero 350ml', price: 6.00, icon: '🥤' },
         { id: 'd2', name: 'Suco Natural Laranja 400ml', price: 8.00, icon: '🍊' },
-        { id: 'd3', name: 'Kombucha Frutas Vermelhas', price: 12.00, icon: '🍷' },
         { id: 'd4', name: 'Água Mineral c/ Gás', price: 4.00, icon: '💧' },
         { id: 'd5', name: 'Água Mineral s/ Gás', price: 4.00, icon: '💧' }
     ],
-    desserts: [
-        { id: 'ds1', name: 'Brownie Fit', desc: 'Zero açúcar, com cacau 70%', price: 10.00, icon: '🍫' },
-        { id: 'ds2', name: 'Salada de Frutas', desc: 'Frutas da estação', price: 8.00, icon: '🍓' }
-    ]
 };
 
 // ==========================================
@@ -715,11 +706,10 @@ const MENU = {
 // Global application state
 let STATE = {
     orderMethod: 'delivery', // 'delivery' | 'pickup'
-    paymentMethod: 'pix',    // 'pix' | 'dinheiro' | 'cartao'
+    paymentMethod: 'pix',    // 'pix' | 'dinheiro' 
     cart: {
         sandwiches: [],
         drinks: [],
-        desserts: []
     },
     currentSandwich: getEmptySandwichState()
 };
