@@ -69,6 +69,9 @@
             <span id="cart-total-text" class="text-sm font-semibold">R$ 0,00</span>
         </div>
 
+        <!-- LANCHES SALVOS NO PEDIDO -->
+        <div id="cart-items-container" class="hidden space-y-2"></div>
+
         <!-- SOBRE O FITBAÊ -->
         <section class="bg-white p-5 rounded-2xl shadow-sm border border-orange-100">
             <div class="flex items-center gap-2 mb-2 text-fitgreen">
@@ -465,7 +468,7 @@
             }).join('');
 
             // Proteínas Extras
-            document.getElementById('extra-proteins-container').innerHTML = menuData.proteins.map(item => {
+            document.getElementById('extra-proteins-container').innerHTML = menuData.proteins.filter(item => item !== 'Sem proteína').map(item => {
                 const isSelected = state.extraProteins.includes(item);
                 return `
                 <button onclick="toggleMultiple('extraProteins', '${item}')" class="p-3 rounded-xl text-sm font-medium flex justify-between items-center transition-all border bg-white ${isSelected ? 'border-fityellow ring-1 ring-fityellow' : 'border-gray-200'}">
@@ -480,7 +483,7 @@
             }).join('');
 
             // Molhos Extras
-            document.getElementById('extra-sauces-container').innerHTML = menuData.sauces.map(item => {
+            document.getElementById('extra-sauces-container').innerHTML = menuData.sauces.filter(item => item !== 'Sem molho').map(item => {
                 const isSelected = state.extraSauces.includes(item);
                 return `
                 <button onclick="toggleMultiple('extraSauces', '${item}')" class="p-3 rounded-xl text-sm font-medium flex justify-between items-center transition-all border bg-white ${isSelected ? 'border-fityellow ring-1 ring-fityellow' : 'border-gray-200'}">
@@ -515,24 +518,70 @@
             document.getElementById('current-subtotal').innerText = formatCurrency(getCurrentTotal());
             document.getElementById('grand-total').innerText = formatCurrency(getGrandTotal());
 
-            // Atualiza barra de carrinho e títulos
+            // Atualiza barra de carrinho, lista de lanches salvos e títulos
             const cartIndicator = document.getElementById('cart-indicator');
+            const cartItemsContainer = document.getElementById('cart-items-container');
             const titleEl = document.getElementById('current-sandwich-title');
+            const savedTotal = cart.reduce((acc, item) => acc + item.total, 0);
             
             if (cart.length > 0) {
                 cartIndicator.classList.remove('hidden');
-                document.getElementById('cart-count-text').innerText = `${cart.length} ${cart.length === 1 ? 'lanche adicionado' : 'lanches adicionados'}`;
-                document.getElementById('cart-total-text').innerText = formatCurrency(cart.reduce((acc, item) => acc + item.total, 0));
-                titleEl.innerText = `Montando o ${cart.length + 1}º Lanche`;
+                cartItemsContainer.classList.remove('hidden');
+                document.getElementById('cart-count-text').innerText = `${cart.length} ${cart.length === 1 ? 'lanche salvo' : 'lanches salvos'}`;
+                document.getElementById('cart-total-text').innerText = formatCurrency(savedTotal);
+                titleEl.innerText = `Montando o Lanche ${cart.length + 1}`;
+
+                cartItemsContainer.innerHTML = cart.map((item, index) => `
+                    <div class="bg-white border border-green-100 rounded-2xl p-3 shadow-sm flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <p class="font-extrabold text-fitgreen">Lanche ${index + 1}</p>
+                            <p class="text-xs text-gray-500 leading-relaxed mt-0.5">${describeSandwich(item)}</p>
+                            <p class="text-sm font-bold text-gray-700 mt-1">${formatCurrency(item.total)}</p>
+                        </div>
+                        <button onclick="removeSandwich(${index})" class="shrink-0 bg-red-50 text-red-600 border border-red-100 px-3 py-2 rounded-xl text-xs font-bold active:scale-95 transition-transform">
+                            Apagar
+                        </button>
+                    </div>
+                `).join('');
             } else {
                 cartIndicator.classList.add('hidden');
+                cartItemsContainer.classList.add('hidden');
+                cartItemsContainer.innerHTML = '';
                 titleEl.innerText = "Monte seu Lanche";
             }
         }
 
         // --- AÇÕES PRINCIPAIS ---
+        function getEmptySandwichState() {
+            return {
+                bread: null,
+                protein: null,
+                salads: [],
+                sauce: null,
+                cheese: null,
+                extraProteins: [],
+                extraSauces: [],
+                premium: []
+            };
+        }
+
         function resetCurrentSandwich() {
-            resetCurrentSandwich();
+            state = getEmptySandwichState();
+        }
+
+        function removeSandwich(index) {
+            cart.splice(index, 1);
+            hideError();
+            renderAll();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function describeSandwich(item) {
+            const parts = [item.bread, item.protein, item.sauce].filter(Boolean);
+            const extrasCount = (item.cheese ? 1 : 0) + item.extraProteins.length + item.extraSauces.length + item.premium.length;
+            if (item.salads.length) parts.push(`${item.salads.length} salada${item.salads.length > 1 ? 's' : ''}`);
+            if (extrasCount) parts.push(`${extrasCount} adicional${extrasCount > 1 ? 'is' : ''}`);
+            return parts.join(' • ');
         }
 
         function handleCancelOrder() {
