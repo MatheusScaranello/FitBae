@@ -1,1532 +1,721 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fitbaê - Seu Sanduíche Perfeito</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Fitbaê - Monte seu lanche saudável</title>
 
-    <!-- Google Fonts: Inter para uma tipografia moderna e limpa -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Phosphor Icons: Biblioteca de ícones leve e bonita -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            fitgreen: {
+              DEFAULT: '#135c30', light: '#1c7a42', dark: '#0b3d1f',
+              50: '#e6f4ea', 100: '#cce8d5', 200: '#99d1ab'
+            },
+            fityellow: { DEFAULT: '#fcb913', light: '#fdd25a', dark: '#d49a0f', 50: '#fff8e6' }
+          },
+          boxShadow: {
+            soft: '0 4px 20px -2px rgba(0,0,0,.06)',
+            float: '0 10px 25px -5px rgba(19,92,48,.18)'
+          },
+          animation: {
+            fadeIn: 'fadeIn .2s ease-out forwards',
+            slideUp: 'slideUp .25s ease-out forwards'
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideUp: { '0%': { transform: 'translateY(16px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+          }
+        }
+      }
+    }
+  </script>
 
-    <!-- Tailwind CSS (CDN para uso em arquivo único) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        fitgreen: {
-                            DEFAULT: "#135c30",
-                            light: "#1c7a42",
-                            dark: "#0b3d1f",
-                            50: "#e6f4ea",
-                            100: "#cce8d5",
-                            200: "#99d1ab",
-                        },
-                        fityellow: {
-                            DEFAULT: "#fcb913",
-                            light: "#fdd25a",
-                            dark: "#d49a0f",
-                            50: "#fff8e6",
-                        },
-                        fitgray: {
-                            50: "#f9fafb",
-                            100: "#f3f4f6",
-                            200: "#e5e7eb",
-                            800: "#1f2937",
-                            900: "#111827",
-                        }
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                        'float': '0 10px 25px -5px rgba(19, 92, 48, 0.15)',
-                    },
-                    animation: {
-                        'slide-up': 'slideUp 0.3s ease-out forwards',
-                        'fade-in': 'fadeIn 0.2s ease-out forwards',
-                        'bounce-slight': 'bounceSlight 2s infinite ease-in-out',
-                    },
-                    keyframes: {
-                        slideUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        bounceSlight: {
-                            '0%, 100%': { transform: 'translateY(-5%)' },
-                            '50%': { transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- Custom CSS for specific behaviors not covered by Tailwind utilities -->
-    <style>
-        /* Smooth scrolling for the whole document */
-        html { 
-            scroll-behavior: smooth; 
-        }
-        
-        /* Hidden scrollbar for elegant UI */
-        ::-webkit-scrollbar { 
-            width: 6px; 
-            background: transparent; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: #94a3b8;
-        }
-
-        /* Hide number input spinners */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        /* Custom Radio Button styling for lists */
-        .custom-radio:checked + div {
-            border-color: #135c30;
-            background-color: #e6f4ea;
-        }
-        .custom-radio:checked + div .radio-circle {
-            border-color: #135c30;
-            background-color: #135c30;
-            box-shadow: inset 0 0 0 3px #e6f4ea;
-        }
-
-        /* Toast notifications container */
-        #toast-container {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            left: 1rem;
-            z-index: 100;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Modal Overlay Transition */
-        .modal-overlay {
-            backdrop-filter: blur(4px);
-            transition: opacity 0.3s ease;
-        }
-
-        /* Glassmorphism utility */
-        .glass {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        }
-    </style>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { -webkit-tap-highlight-color: transparent; }
+    ::-webkit-scrollbar { width: 6px; background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+    .glass { background: rgba(255,255,255,.94); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,.35); }
+    .radio-card:checked + div { border-color: #135c30; background: #e6f4ea; box-shadow: 0 0 0 1px #135c30; }
+    #toast-container { position: fixed; top: 1rem; right: 1rem; left: 1rem; z-index: 9999; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+    .modal-overlay { backdrop-filter: blur(4px); }
+  </style>
 </head>
 
-<body class="min-h-screen bg-gray-50 font-sans pb-48 text-gray-800 antialiased relative selection:bg-fitgreen selection:text-white">
+<body class="min-h-screen bg-gray-50 font-sans pb-44 text-gray-800 antialiased selection:bg-fitgreen selection:text-white">
+  <div id="toast-container"></div>
 
-    <!-- TOAST CONTAINER -->
-    <div id="toast-container"></div>
+  <header class="glass sticky top-0 z-40 shadow-sm">
+    <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+      <button onclick="scrollToTop()" class="flex items-center gap-3 text-left" aria-label="Voltar ao topo">
+        <div class="bg-fitgreen w-10 h-10 rounded-full flex items-center justify-center shadow-md">
+          <i class="ph ph-leaf text-white text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-black tracking-tight text-fitgreen">fit<span class="text-fityellow">baê</span></h1>
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Lanches saudáveis</p>
+        </div>
+      </button>
+      <button onclick="scrollToCart()" class="relative p-2 text-gray-600 hover:text-fitgreen transition-colors" aria-label="Ir para o carrinho">
+        <i class="ph ph-shopping-bag text-2xl"></i>
+        <span id="header-cart-badge" class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center scale-0 transition-transform">0</span>
+      </button>
+    </div>
+    <div class="w-full bg-gray-100 h-1"><div id="scroll-progress" class="bg-fityellow h-1 w-0 transition-all"></div></div>
+  </header>
 
-    <!-- MAIN NAVIGATION HEADER -->
-    <header class="glass sticky top-0 z-40 shadow-sm transition-all duration-300">
-        <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="bg-fitgreen w-10 h-10 rounded-full flex items-center justify-center shadow-md">
-                    <i class="ph ph-leaf text-white text-xl"></i>
-                </div>
-                <h1 class="text-2xl font-black tracking-tight text-fitgreen">
-                    fit<span class="text-fityellow">baê</span>
-                </h1>
-            </div>
-            
-            <button onclick="scrollToCart()" class="relative p-2 text-gray-600 hover:text-fitgreen transition-colors focus:outline-none">
-                <i class="ph ph-shopping-bag text-2xl"></i>
-                <span id="header-cart-badge" class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center transform scale-0 transition-transform">0</span>
-            </button>
-        </div>
-        
-        <!-- Progress Bar (Optional UI enhancement) -->
-        <div class="w-full bg-gray-100 h-1">
-            <div class="bg-fityellow h-1 w-1/3" id="scroll-progress"></div>
-        </div>
-    </header>
+  <section class="bg-fitgreen text-white pt-8 pb-12 rounded-b-[2rem] shadow-float relative overflow-hidden mb-6">
+    <div class="absolute -top-20 -right-20 w-64 h-64 bg-white opacity-5 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-0 -left-10 w-40 h-40 bg-fityellow opacity-10 rounded-full blur-xl"></div>
+    <div class="max-w-2xl mx-auto px-4 text-center relative z-10 flex flex-col items-center">
+      <span id="store-status-pill" class="inline-flex items-center gap-1 bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm mb-4">
+        <span class="w-2 h-2 rounded-full bg-green-300 animate-pulse"></span> ABERTO AGORA
+      </span>
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-3 leading-tight">Monte seu lanche<br>do seu jeito</h2>
+      <p class="text-fitgreen-100 text-sm md:text-base font-medium max-w-sm mb-6">Escolha pão, proteína, saladas, molho e extras. Ao finalizar, o pedido vai pronto para o WhatsApp.</p>
+      <div class="grid grid-cols-3 gap-3 w-full max-w-sm">
+        <div class="bg-white/10 rounded-xl p-3 backdrop-blur-md border border-white/10"><i class="ph ph-moped text-fityellow text-2xl mb-1"></i><p class="text-[10px] uppercase font-bold text-white/70">Entrega</p><p class="text-sm font-bold">R$ 10,00</p></div>
+        <div class="bg-white/10 rounded-xl p-3 backdrop-blur-md border border-white/10"><i class="ph ph-map-pin text-fityellow text-2xl mb-1"></i><p class="text-[10px] uppercase font-bold text-white/70">Cidade</p><p class="text-sm font-bold">Palmeira</p></div>
+        <div class="bg-white/10 rounded-xl p-3 backdrop-blur-md border border-white/10"><i class="ph ph-pix-logo text-fityellow text-2xl mb-1"></i><p class="text-[10px] uppercase font-bold text-white/70">Pagamento</p><p class="text-sm font-bold">Só Pix</p></div>
+      </div>
+    </div>
+  </section>
 
-    <!-- HERO SECTION -->
-    <section class="bg-fitgreen text-white pt-8 pb-12 rounded-b-[2rem] shadow-float relative overflow-hidden mb-6">
-        <!-- Background decorative elements -->
-        <div class="absolute -top-20 -right-20 w-64 h-64 bg-white opacity-5 rounded-full blur-2xl"></div>
-        <div class="absolute bottom-0 -left-10 w-40 h-40 bg-fityellow opacity-10 rounded-full blur-xl"></div>
-        
-        <div class="max-w-2xl mx-auto px-4 text-center relative z-10 flex flex-col items-center">
-            <span class="inline-flex items-center gap-1 bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm mb-4">
-                <span class="w-2 h-2 rounded-full bg-green-300 animate-pulse"></span>
-                ABERTO AGORA
-            </span>
-            <h2 class="text-3xl md:text-4xl font-extrabold mb-3 leading-tight">
-                Sua escolha saudável,<br> rápida e deliciosa!
-            </h2>
-            <p class="text-fitgreen-100 text-sm md:text-base font-medium max-w-sm mb-6">
-                Monte seu lanche perfeito, com ingredientes frescos e selecionados, direto pelo WhatsApp.
-            </p>
-            
-            <!-- Info Cards -->
-            <div class="flex gap-3 justify-center w-full max-w-sm">
-                <div class="bg-white/10 rounded-xl p-3 flex-1 backdrop-blur-md border border-white/10">
-                    <i class="ph ph-moped text-fityellow text-2xl mb-1"></i>
-                    <p class="text-[10px] uppercase font-bold text-white/70">Entrega</p>
-                    <p class="text-sm font-bold">R$ 10,00</p>
-                </div>
-                <div class="bg-white/10 rounded-xl p-3 flex-1 backdrop-blur-md border border-white/10">
-                    <i class="ph ph-clock-countdown text-fityellow text-2xl mb-1"></i>
-                    <p class="text-[10px] uppercase font-bold text-white/70">Tempo médio</p>
-                    <p class="text-sm font-bold">30-45 min</p>
-                </div>
-                <div class="bg-white/10 rounded-xl p-3 flex-1 backdrop-blur-md border border-white/10">
-                    <i class="ph ph-pix-logo text-fityellow text-2xl mb-1"></i>
-                    <p class="text-[10px] uppercase font-bold text-white/70">Pagamento</p>
-                    <p class="text-sm font-bold">Pix/Din</p>
-                </div>
-            </div>
-        </div>
+  <main class="max-w-2xl mx-auto px-4 space-y-8 mt-4">
+    <div id="store-closed-banner" class="hidden bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl shadow-sm animate-fadeIn">
+      <div class="flex items-start gap-3"><i class="ph-fill ph-warning-circle text-red-500 text-xl mt-0.5"></i><div><h3 class="text-red-800 font-bold">Loja fechada</h3><p class="text-red-600 text-sm mt-1">No momento não estamos aceitando pedidos.</p></div></div>
+    </div>
+
+    <section class="bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex gap-4 items-center">
+      <div class="w-12 h-12 rounded-full bg-fityellow-50 flex items-center justify-center shrink-0"><i class="ph-fill ph-sandwich text-fityellow-dark text-2xl"></i></div>
+      <div>
+        <h2 class="font-bold text-gray-900 mb-1">Lanche base</h2>
+        <p class="text-sm text-gray-500 leading-relaxed">Inclui <strong>1 pão</strong>, <strong>1 proteína</strong>, <strong>saladas</strong> e <strong>1 molho</strong>.</p>
+        <div class="mt-2 inline-flex items-center gap-1 bg-fitgreen-50 text-fitgreen-dark text-xs px-2.5 py-1 rounded-md font-bold"><i class="ph ph-tag"></i> Valor base: R$ 22,90</div>
+      </div>
     </section>
 
-    <!-- MAIN APP CONTAINER -->
-    <main class="max-w-2xl mx-auto px-4 space-y-8 mt-4">
-
-        <!-- Store Status Notice -->
-        <div id="store-closed-banner" class="hidden bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl shadow-sm animate-fade-in">
-            <div class="flex items-start gap-3">
-                <i class="ph-fill ph-warning-circle text-red-500 text-xl mt-0.5"></i>
-                <div>
-                    <h3 class="text-red-800 font-bold">Loja Fechada</h3>
-                    <p class="text-red-600 text-sm mt-1">No momento não estamos aceitando pedidos. Voltamos amanhã!</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- HOW IT WORKS BANNER -->
-        <section class="bg-white p-5 rounded-2xl shadow-soft border border-gray-100 flex gap-4 items-center">
-            <div class="w-12 h-12 rounded-full bg-fityellow-50 flex items-center justify-center shrink-0">
-                <i class="ph-fill ph-sandwich text-fityellow-dark text-2xl"></i>
-            </div>
-            <div>
-                <h2 class="font-bold text-gray-900 mb-1">O Lanche Base</h2>
-                <p class="text-sm text-gray-500 leading-relaxed">
-                    Todo lanche inclui <strong>1 Pão</strong>, <strong>1 Proteína</strong>, <strong>Saladas</strong> (à vontade) e <strong>1 Molho</strong>.
-                </p>
-                <div class="mt-2 inline-flex items-center gap-1 bg-fitgreen-50 text-fitgreen-dark text-xs px-2.5 py-1 rounded-md font-bold">
-                    <i class="ph ph-tag"></i> Valor base: R$ 22,90
-                </div>
-            </div>
-        </section>
-
-        <!-- CART PREVIEW INDICATOR (Sticky underneath header on mobile) -->
-        <div id="cart-preview" class="hidden sticky top-[72px] z-30 bg-gray-900 text-white p-3 rounded-xl flex items-center justify-between shadow-lg cursor-pointer transform transition-all hover:scale-[1.02]" onclick="scrollToCart()">
-            <div class="flex items-center gap-3">
-                <div class="bg-gray-800 p-2 rounded-lg relative">
-                    <i class="ph ph-shopping-cart text-lg"></i>
-                    <span id="cart-preview-count" class="absolute -top-1 -right-1 bg-fityellow text-gray-900 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-400 font-medium">Ver carrinho</p>
-                    <p class="text-sm font-bold" id="cart-preview-total">R$ 0,00</p>
-                </div>
-            </div>
-            <i class="ph ph-caret-right text-gray-400"></i>
-        </div>
-
-        <!-- SANDWICH BUILDER SECTION -->
-        <div class="relative">
-            <!-- Decorative line connecting steps -->
-            <div class="absolute left-4 top-10 bottom-10 w-0.5 bg-gray-200 hidden sm:block"></div>
-
-            <div class="space-y-8 relative z-10" id="builder-container">
-                
-                <!-- STEP INDICATOR HEADER -->
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="h-px bg-gray-200 flex-1"></div>
-                    <span id="current-sandwich-title" class="bg-gray-100 text-gray-500 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
-                        Montando Lanche 1
-                    </span>
-                    <div class="h-px bg-gray-200 flex-1"></div>
-                </div>
-
-                <!-- STEP 1: BREAD -->
-                <section class="relative bg-white rounded-2xl p-5 shadow-soft border border-gray-100">
-                    <div class="flex items-start gap-4 mb-4">
-                        <div class="w-8 h-8 rounded-full bg-fitgreen text-white flex items-center justify-center font-bold shrink-0 shadow-md">1</div>
-                        <div>
-                            <h3 class="font-extrabold text-xl text-gray-900">Escolha a Base</h3>
-                            <p class="text-sm text-gray-500">Selecione o pão do seu sanduíche.</p>
-                        </div>
-                    </div>
-                    <div id="breads-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-12"></div>
-                </section>
-
-                <!-- STEP 2: PROTEIN -->
-                <section class="relative bg-white rounded-2xl p-5 shadow-soft border border-gray-100">
-                    <div class="flex items-start gap-4 mb-4">
-                        <div class="w-8 h-8 rounded-full bg-fitgreen text-white flex items-center justify-center font-bold shrink-0 shadow-md">2</div>
-                        <div>
-                            <h3 class="font-extrabold text-xl text-gray-900">Escolha a Proteína</h3>
-                            <p class="text-sm text-gray-500">A estrela do seu lanche.</p>
-                        </div>
-                    </div>
-                    <div id="proteins-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-12"></div>
-                </section>
-
-                <!-- STEP 3: SALADS -->
-                <section class="relative bg-white rounded-2xl p-5 shadow-soft border border-gray-100">
-                    <div class="flex items-start gap-4 mb-4">
-                        <div class="w-8 h-8 rounded-full bg-fitgreen text-white flex items-center justify-center font-bold shrink-0 shadow-md">3</div>
-                        <div class="w-full flex justify-between items-start">
-                            <div>
-                                <h3 class="font-extrabold text-xl text-gray-900">Escolha as Saladas</h3>
-                                <p class="text-sm text-gray-500">Pode escolher quantas quiser!</p>
-                            </div>
-                            <span class="text-[10px] uppercase font-bold bg-fityellow-50 text-fityellow-dark px-2 py-1 rounded">Obrigatório 1+</span>
-                        </div>
-                    </div>
-                    <div id="salads-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3 pl-0 sm:pl-12"></div>
-                </section>
-
-                <!-- STEP 4: SAUCE -->
-                <section class="relative bg-white rounded-2xl p-5 shadow-soft border border-gray-100">
-                    <div class="flex items-start gap-4 mb-4">
-                        <div class="w-8 h-8 rounded-full bg-fitgreen text-white flex items-center justify-center font-bold shrink-0 shadow-md">4</div>
-                        <div>
-                            <h3 class="font-extrabold text-xl text-gray-900">Escolha o Molho</h3>
-                            <p class="text-sm text-gray-500">O toque especial de sabor.</p>
-                        </div>
-                    </div>
-                    <div id="sauces-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-0 sm:pl-12"></div>
-                </section>
-
-                <!-- UPSELLS / EXTRAS -->
-                <section class="relative bg-gradient-to-br from-fitgreen-50 to-white rounded-2xl p-5 shadow-soft border border-fitgreen-100">
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="ph-fill ph-sparkle text-fityellow text-2xl"></i>
-                        <h3 class="font-extrabold text-xl text-fitgreen-dark">Turbine seu Lanche</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-6">Itens adicionais cobrados à parte para deixar seu sanduíche monstro.</p>
-
-                    <div class="space-y-6">
-                        <!-- Cheeses -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="ph ph-cheese text-gray-400"></i> Queijos</h4>
-                                <span class="text-xs font-bold text-gray-500">+ R$ 4,00</span>
-                            </div>
-                            <div id="cheeses-container" class="grid grid-cols-2 gap-2"></div>
-                        </div>
-
-                        <!-- Extra Protein -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="ph ph-cooking-pot text-gray-400"></i> Proteína Extra</h4>
-                                <span class="text-xs font-bold text-gray-500">+ R$ 7,00</span>
-                            </div>
-                            <div id="extra-proteins-container" class="grid grid-cols-2 gap-2"></div>
-                        </div>
-
-                        <!-- Extra Sauce -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="ph ph-drop text-gray-400"></i> Molho Extra</h4>
-                                <span class="text-xs font-bold text-gray-500">+ R$ 2,00</span>
-                            </div>
-                            <div id="extra-sauces-container" class="grid grid-cols-2 gap-2"></div>
-                        </div>
-
-                        <!-- Premium Extras -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="ph ph-star text-gray-400"></i> Premium</h4>
-                                <span class="text-xs font-bold text-gray-500">+ R$ 3,00</span>
-                            </div>
-                            <div id="premium-container" class="grid grid-cols-2 gap-2"></div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SANDWICH ACTION BUTTONS -->
-                <div class="flex gap-3">
-                    <button onclick="handleCancelCurrent()" class="flex-1 px-4 py-3 bg-white border-2 border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50 hover:border-red-300 hover:text-red-500 transition-colors flex justify-center items-center gap-2">
-                        <i class="ph ph-trash"></i> Limpar
-                    </button>
-                    <button onclick="handleAddSandwichToCart()" class="flex-[2] px-4 py-3 bg-fitgreen text-white rounded-xl font-extrabold shadow-md hover:bg-fitgreen-dark transition-colors flex justify-center items-center gap-2">
-                        <i class="ph ph-plus-circle text-xl"></i>
-                        Adicionar ao Carrinho (<span id="btn-current-subtotal">R$ 22,90</span>)
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-        <hr class="border-gray-200 my-8">
-
-        <!-- DRINKS SECTION -->
-        <section id="drinks-section" class="bg-white p-5 rounded-2xl shadow-soft border border-gray-100">
-            <div class="flex items-center gap-3 mb-2">
-                <i class="ph-fill ph-wine text-fitgreen text-2xl"></i>
-                <h3 class="font-extrabold text-xl text-gray-900">Bebidas</h3>
-            </div>
-            <p class="text-sm text-gray-500 mb-5">Adicione algo para refrescar.</p>
-            <div id="drinks-container" class="space-y-3"></div>
-        </section>
-
-        <hr class="border-gray-200 my-8" id="cart-anchor">
-
-        <!-- CART SUMMARY SECTION -->
-        <section class="bg-gray-900 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 text-gray-800 opacity-50 text-[100px] select-none pointer-events-none">
-                <i class="ph-fill ph-shopping-bag"></i>
-            </div>
-            
-            <div class="relative z-10">
-                <h3 class="font-extrabold text-2xl mb-1 flex items-center gap-2">
-                    Seu Pedido
-                    <span id="cart-section-count" class="bg-fityellow text-gray-900 text-xs font-black px-2 py-0.5 rounded-full">0</span>
-                </h3>
-                <p class="text-gray-400 text-sm mb-6">Revise os itens antes de fechar.</p>
-
-                <!-- Empty Cart State -->
-                <div id="empty-cart-state" class="text-center py-8">
-                    <i class="ph ph-shopping-cart text-4xl text-gray-600 mb-2"></i>
-                    <p class="text-gray-400 font-medium">Seu carrinho está vazio.</p>
-                    <p class="text-gray-500 text-sm">Monte seu lanche acima para começar!</p>
-                </div>
-
-                <!-- Cart Items -->
-                <div id="cart-items-container" class="hidden space-y-3 mb-6"></div>
-
-                <!-- Totals -->
-                <div class="border-t border-gray-700 pt-4 space-y-2">
-                    <div class="flex justify-between text-sm text-gray-400">
-                        <span>Subtotal itens:</span>
-                        <span id="summary-subtotal">R$ 0,00</span>
-                    </div>
-                    <div class="flex justify-between text-sm text-gray-400" id="summary-delivery-row">
-                        <span>Taxa de Entrega:</span>
-                        <span id="summary-delivery-fee">R$ 10,00</span>
-                    </div>
-                    <div class="flex justify-between font-black text-xl text-white mt-2 pt-2 border-t border-gray-700 border-dashed">
-                        <span>Total:</span>
-                        <span id="summary-grand-total" class="text-fityellow">R$ 0,00</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CHECKOUT FORM -->
-        <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-soft border border-gray-100">
-            <h3 class="font-extrabold text-xl text-gray-900 mb-1 flex items-center gap-2">
-                <i class="ph-fill ph-user-circle text-fitgreen"></i> Dados para Conclusão
-            </h3>
-            <p class="text-sm text-gray-500 mb-6 border-b pb-4">Preencha com atenção para garantirmos a entrega.</p>
-
-            <div class="space-y-5">
-                
-                <!-- Nome -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Nome Completo <span class="text-red-500">*</span></label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="ph ph-user text-gray-400"></i>
-                        </div>
-                        <input id="customer-name" type="text" placeholder="Como devemos lhe chamar?" 
-                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen focus:border-fitgreen transition-all bg-gray-50 focus:bg-white text-gray-900">
-                    </div>
-                </div>
-
-                <!-- Metodo de Recebimento -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Como deseja receber? <span class="text-red-500">*</span></label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="orderMethod" value="delivery" class="hidden custom-radio" onchange="handleMethodChange(this)" checked>
-                            <div class="border-2 border-gray-200 rounded-xl p-3 text-center transition-all flex flex-col items-center gap-1 hover:border-fitgreen-200">
-                                <i class="ph ph-moped text-2xl text-gray-500"></i>
-                                <span class="font-bold text-sm text-gray-700">Entrega</span>
-                                <span class="text-[10px] text-gray-500">(+ R$ 10)</span>
-                            </div>
-                        </label>
-
-                        <label class="cursor-pointer">
-                            <input type="radio" name="orderMethod" value="pickup" class="hidden custom-radio" onchange="handleMethodChange(this)">
-                            <div class="border-2 border-gray-200 rounded-xl p-3 text-center transition-all flex flex-col items-center gap-1 hover:border-fitgreen-200">
-                                <i class="ph ph-storefront text-2xl text-gray-500"></i>
-                                <span class="font-bold text-sm text-gray-700">Retirar</span>
-                                <span class="text-[10px] text-green-600 font-bold">(Grátis)</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Endereço (Condicional) -->
-                <div id="address-section" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
-                    <h4 class="font-bold text-gray-800 text-sm flex items-center gap-1">
-                        <i class="ph ph-map-pin text-fitgreen"></i> Endereço de Entrega
-                    </h4>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Cidade <span class="text-red-500">*</span></label>
-                            <select id="customer-city" class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm">
-                                <option value="Palmeira das Missões">Palmeira das Missões - RS</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Bairro <span class="text-red-500">*</span></label>
-                            <input id="customer-neighborhood" type="text" placeholder="Seu bairro" class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-[2fr_1fr] gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Rua/Avenida <span class="text-red-500">*</span></label>
-                            <input id="customer-street" type="text" placeholder="Nome da rua" class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Número <span class="text-red-500">*</span></label>
-                            <input id="customer-number" type="text" placeholder="Nº" class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Complemento / Ref. (Opcional)</label>
-                        <input id="customer-complement" type="text" placeholder="Apto, bloco, perto de..." class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm">
-                    </div>
-                </div>
-
-                <!-- Pagamento -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Forma de Pagamento <span class="text-red-500">*</span></label>
-                    <select id="payment-method" class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen bg-white text-gray-800 font-medium" onchange="handlePaymentChange(this)">
-                        <option value="pix">PIX (Chave informada no WhatsApp)</option>
-                        <option value="dinheiro">Dinheiro (Pagamento na entrega)</option>
-                        <option value="cartao">Cartão de Crédito/Débito (Levamos a máquina)</option>
-                    </select>
-
-                    <div id="change-section" class="hidden mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-xl">
-                        <label class="block text-xs font-bold text-yellow-800 mb-1">Precisa de troco para quanto?</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 font-bold">R$</span>
-                            <input id="payment-change" type="number" placeholder="Ex: 100" class="w-full pl-9 pr-3 py-2 rounded-lg border border-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 bg-white">
-                        </div>
-                        <p class="text-[10px] text-yellow-600 mt-1">Deixe em branco se não precisar de troco.</p>
-                    </div>
-                </div>
-
-                <!-- Observações -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Observações Gerais</label>
-                    <textarea id="customer-notes" placeholder="Ex.: Sem cebola, embalar separado, deixar na portaria..." rows="3" class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen resize-none text-sm"></textarea>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
-
-    <!-- FOOTER INFO -->
-    <footer class="bg-gray-900 text-gray-400 py-8 text-center mt-12 pb-32">
-        <div class="max-w-md mx-auto px-4">
-            <div class="flex justify-center mb-4">
-                <div class="bg-white/10 w-12 h-12 rounded-full flex items-center justify-center">
-                    <i class="ph ph-leaf text-gray-300 text-2xl"></i>
-                </div>
-            </div>
-            <h4 class="text-white font-bold mb-2">Fitbaê Delivery</h4>
-            <p class="text-sm mb-4">Comida saudável, saborosa e preparada com muito carinho para você.</p>
-            <div class="flex justify-center gap-4 mb-6">
-                <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-fitgreen hover:text-white transition-colors"><i class="ph ph-instagram-logo"></i></a>
-                <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-fitgreen hover:text-white transition-colors"><i class="ph ph-facebook-logo"></i></a>
-                <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-fitgreen hover:text-white transition-colors"><i class="ph ph-whatsapp-logo"></i></a>
-            </div>
-            <p class="text-[10px]">&copy; 2026 Fitbaê. Todos os direitos reservados.</p>
-            <p class="text-[10px] mt-1">Desenvolvido com dedicação.</p>
-        </div>
-    </footer>
-
-    <!-- BOTTOM FLOATING ACTION BAR -->
-    <div class="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] p-4 z-50 rounded-t-[2rem]">
-        <div class="max-w-2xl mx-auto flex items-center gap-3">
-            <button onclick="handleClearAll()" class="w-12 h-12 rounded-2xl bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-colors shrink-0" title="Cancelar Pedido">
-                <i class="ph ph-trash text-xl"></i>
-            </button>
-            <button onclick="openConfirmationModal()" class="flex-1 bg-fitgreen text-white h-14 rounded-2xl font-extrabold text-lg shadow-float flex items-center justify-center gap-2 hover:bg-fitgreen-dark transition-all transform active:scale-95">
-                <i class="ph ph-whatsapp-logo text-2xl text-fityellow"></i>
-                Enviar Pedido
-            </button>
-        </div>
+    <div id="cart-preview" class="hidden sticky top-[76px] z-30 bg-gray-900 text-white p-3 rounded-xl items-center justify-between shadow-lg cursor-pointer" onclick="scrollToCart()">
+      <div class="flex items-center gap-3">
+        <div class="bg-gray-800 p-2 rounded-lg relative"><i class="ph ph-shopping-cart text-lg"></i><span id="cart-preview-count" class="absolute -top-1 -right-1 bg-fityellow text-gray-900 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span></div>
+        <div><p class="text-xs text-gray-400 font-medium">Ver carrinho</p><p class="text-sm font-bold" id="cart-preview-total">R$ 0,00</p></div>
+      </div>
+      <i class="ph ph-caret-right text-gray-400"></i>
     </div>
 
-    <!-- CONFIRMATION MODAL -->
-    <div id="confirm-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-gray-900/60 modal-overlay" onclick="closeConfirmationModal()"></div>
-        
-        <!-- Modal Content -->
-        <div class="relative bg-white w-full max-w-md mx-4 rounded-3xl shadow-2xl p-6 transform scale-95 opacity-0 transition-all duration-300" id="modal-content">
-            <div class="absolute top-4 right-4">
-                <button onclick="closeConfirmationModal()" class="text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
-                    <i class="ph ph-x font-bold"></i>
-                </button>
-            </div>
+    <div id="builder-container" class="space-y-8">
+      <div class="flex items-center gap-3 mb-6"><div class="h-px bg-gray-200 flex-1"></div><span id="current-sandwich-title" class="bg-gray-100 text-gray-500 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">Montando lanche 1</span><div class="h-px bg-gray-200 flex-1"></div></div>
 
-            <div class="w-16 h-16 bg-green-100 text-fitgreen rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="ph-fill ph-check-circle text-3xl"></i>
-            </div>
-            
-            <h3 class="text-xl font-black text-center text-gray-900 mb-2">Tudo certo?</h3>
-            <p class="text-center text-gray-500 text-sm mb-6">Você será redirecionado para o WhatsApp da loja para concluir o pedido.</p>
+      <section class="bg-white rounded-2xl p-5 shadow-soft border border-gray-100">
+        <div class="flex items-start gap-4 mb-4"><div class="step-number">1</div><div><h3 class="font-extrabold text-xl text-gray-900">Escolha a base</h3><p class="text-sm text-gray-500">Selecione o pão do seu sanduíche.</p></div></div>
+        <div id="breads-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+      </section>
 
-            <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
-                <div class="flex justify-between items-center mb-2 pb-2 border-b border-gray-200">
-                    <span class="text-sm font-bold text-gray-600">Total a pagar:</span>
-                    <span class="text-lg font-black text-fitgreen" id="modal-total-value">R$ 0,00</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-sm font-bold text-gray-600">Pagamento:</span>
-                    <span class="text-sm font-bold text-gray-800" id="modal-payment-text">-</span>
-                </div>
-            </div>
+      <section class="bg-white rounded-2xl p-5 shadow-soft border border-gray-100">
+        <div class="flex items-start gap-4 mb-4"><div class="step-number">2</div><div><h3 class="font-extrabold text-xl text-gray-900">Escolha a proteína</h3><p class="text-sm text-gray-500">A estrela do seu lanche.</p></div></div>
+        <div id="proteins-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+      </section>
 
-            <div class="flex gap-3">
-                <button onclick="closeConfirmationModal()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold hover:bg-gray-50">
-                    Voltar
-                </button>
-                <button onclick="executeFinalOrder()" class="flex-[2] py-3 rounded-xl bg-fitgreen text-white font-black shadow-md hover:bg-fitgreen-dark flex justify-center items-center gap-2">
-                    <i class="ph-fill ph-whatsapp-logo"></i> Confirmar
-                </button>
-            </div>
+      <section class="bg-white rounded-2xl p-5 shadow-soft border border-gray-100">
+        <div class="flex items-start gap-4 mb-4"><div class="step-number">3</div><div class="w-full flex justify-between gap-3 items-start"><div><h3 class="font-extrabold text-xl text-gray-900">Escolha as saladas</h3><p class="text-sm text-gray-500">Escolha pelo menos uma opção.</p></div><span class="text-[10px] uppercase font-bold bg-fityellow-50 text-fityellow-dark px-2 py-1 rounded shrink-0">Obrigatório</span></div></div>
+        <div id="salads-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+      </section>
+
+      <section class="bg-white rounded-2xl p-5 shadow-soft border border-gray-100">
+        <div class="flex items-start gap-4 mb-4"><div class="step-number">4</div><div><h3 class="font-extrabold text-xl text-gray-900">Escolha o molho</h3><p class="text-sm text-gray-500">O toque final.</p></div></div>
+        <div id="sauces-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+      </section>
+
+      <section class="bg-gradient-to-br from-fitgreen-50 to-white rounded-2xl p-5 shadow-soft border border-fitgreen-100">
+        <div class="flex items-center gap-2 mb-2"><i class="ph-fill ph-sparkle text-fityellow text-2xl"></i><h3 class="font-extrabold text-xl text-fitgreen-dark">Turbine seu lanche</h3></div>
+        <p class="text-sm text-gray-600 mb-6">Adicionais cobrados à parte.</p>
+        <div class="space-y-6">
+          <div><div class="flex justify-between items-center mb-3"><h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="ph ph-cheese text-gray-400"></i> Queijos</h4><span class="text-xs font-bold text-gray-500">+ R$ 4,00</span></div><div id="cheeses-container" class="grid grid-cols-2 gap-2"></div></div>
+          <div><div class="flex justify-between items-center mb-3"><h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="ph ph-cooking-pot text-gray-400"></i> Proteína extra</h4><span class="text-xs font-bold text-gray-500">+ R$ 7,00 cada</span></div><div id="extra-proteins-container" class="grid grid-cols-2 gap-2"></div></div>
+          <div><div class="flex justify-between items-center mb-3"><h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="ph ph-drop text-gray-400"></i> Molho extra</h4><span class="text-xs font-bold text-gray-500">+ R$ 2,00 cada</span></div><div id="extra-sauces-container" class="grid grid-cols-2 gap-2"></div></div>
+          <div><div class="flex justify-between items-center mb-3"><h4 class="font-bold text-gray-800 flex items-center gap-2"><i class="ph ph-star text-gray-400"></i> Premium</h4><span class="text-xs font-bold text-gray-500">+ R$ 3,00 cada</span></div><div id="premium-container" class="grid grid-cols-2 gap-2"></div></div>
         </div>
+      </section>
+
+      <div class="flex gap-3">
+        <button onclick="handleCancelCurrent()" class="flex-1 px-4 py-3 bg-white border-2 border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50 hover:border-red-300 hover:text-red-500 transition-colors flex justify-center items-center gap-2"><i class="ph ph-trash"></i> Limpar</button>
+        <button onclick="handleAddSandwichToCart()" class="flex-[2] px-4 py-3 bg-fitgreen text-white rounded-xl font-extrabold shadow-md hover:bg-fitgreen-dark transition-colors flex justify-center items-center gap-2"><i class="ph ph-plus-circle text-xl"></i>Adicionar ao carrinho <span id="btn-current-subtotal">R$ 22,90</span></button>
+      </div>
     </div>
 
-<script>
-/**
- * FITBAÊ DELIVERY APP - LOGIC CONTROLLER
- * Author: AI Assistant
- * Version: 2.0
- * Description: Fully functional front-end logic for a sandwich builder delivery system.
- */
+    <hr class="border-gray-200 my-8">
 
-// ==========================================
-// CONSTANTS & CONFIGURATION
-// ==========================================
-const CONFIG = {
-    WHATSAPP_NUMBER: "5519999270698",
-    BASE_SANDWICH_PRICE: 22.90,
-    DELIVERY_FEE: 10.00,
-    STORE_OPEN: true,
-    STORAGE_KEY: "fitbae_cart_v2"
-};
+    <section id="drinks-section" class="bg-white p-5 rounded-2xl shadow-soft border border-gray-100">
+      <div class="flex items-center gap-3 mb-2"><i class="ph-fill ph-wine text-fitgreen text-2xl"></i><h3 class="font-extrabold text-xl text-gray-900">Bebidas</h3></div>
+      <p class="text-sm text-gray-500 mb-5">Adicione algo para acompanhar.</p>
+      <div id="drinks-container" class="space-y-3"></div>
+    </section>
 
-// ==========================================
-// DATA STRUCTURES (MENU)
-// ==========================================
-// Replaced simple strings with rich objects for a better UI and exact tracking.
-const MENU = {
-    breads: [
+    <hr class="border-gray-200 my-8" id="cart-anchor">
+
+    <section class="bg-gray-900 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
+      <div class="absolute -right-6 -top-6 text-gray-800 opacity-50 text-[100px] select-none pointer-events-none"><i class="ph-fill ph-shopping-bag"></i></div>
+      <div class="relative z-10">
+        <h3 class="font-extrabold text-2xl mb-1 flex items-center gap-2">Seu pedido <span id="cart-section-count" class="bg-fityellow text-gray-900 text-xs font-black px-2 py-0.5 rounded-full">0</span></h3>
+        <p class="text-gray-400 text-sm mb-6">Revise os itens antes de fechar.</p>
+        <div id="empty-cart-state" class="text-center py-8"><i class="ph ph-shopping-cart text-4xl text-gray-600 mb-2"></i><p class="text-gray-400 font-medium">Seu carrinho está vazio.</p><p class="text-gray-500 text-sm">Monte seu lanche acima para começar.</p></div>
+        <div id="cart-items-container" class="hidden space-y-3 mb-6"></div>
+        <div class="border-t border-gray-700 pt-4 space-y-2">
+          <div class="flex justify-between text-sm text-gray-400"><span>Subtotal itens:</span><span id="summary-subtotal">R$ 0,00</span></div>
+          <div class="flex justify-between text-sm text-gray-400" id="summary-delivery-row"><span>Taxa de entrega:</span><span id="summary-delivery-fee">R$ 10,00</span></div>
+          <div class="flex justify-between font-black text-xl text-white mt-2 pt-2 border-t border-gray-700 border-dashed"><span>Total:</span><span id="summary-grand-total" class="text-fityellow">R$ 0,00</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white p-5 sm:p-6 rounded-2xl shadow-soft border border-gray-100">
+      <h3 class="font-extrabold text-xl text-gray-900 mb-1 flex items-center gap-2"><i class="ph-fill ph-user-circle text-fitgreen"></i> Dados para conclusão</h3>
+      <p class="text-sm text-gray-500 mb-6 border-b pb-4">Preencha com atenção para enviarmos o pedido certo no WhatsApp.</p>
+      <div class="space-y-5">
+        <div><label class="block text-sm font-bold text-gray-700 mb-1">Nome completo <span class="text-red-500">*</span></label><input id="customer-name" type="text" placeholder="Como devemos lhe chamar?" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen focus:border-fitgreen bg-gray-50 focus:bg-white text-gray-900"></div>
+        <div>
+          <label class="block text-sm font-bold text-gray-700 mb-2">Como deseja receber? <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="cursor-pointer"><input type="radio" name="orderMethod" value="delivery" class="hidden radio-card" onchange="handleMethodChange(this)" checked><div class="border-2 border-gray-200 rounded-xl p-3 text-center transition-all flex flex-col items-center gap-1 hover:border-fitgreen-200"><i class="ph ph-moped text-2xl text-gray-500"></i><span class="font-bold text-sm text-gray-700">Entrega</span><span class="text-[10px] text-gray-500">+ R$ 10</span></div></label>
+            <label class="cursor-pointer"><input type="radio" name="orderMethod" value="pickup" class="hidden radio-card" onchange="handleMethodChange(this)"><div class="border-2 border-gray-200 rounded-xl p-3 text-center transition-all flex flex-col items-center gap-1 hover:border-fitgreen-200"><i class="ph ph-storefront text-2xl text-gray-500"></i><span class="font-bold text-sm text-gray-700">Retirar</span><span class="text-[10px] text-green-600 font-bold">Grátis</span></div></label>
+          </div>
+        </div>
+
+        <div id="address-section" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
+          <h4 class="font-bold text-gray-800 text-sm flex items-center gap-1"><i class="ph ph-map-pin text-fitgreen"></i> Endereço de entrega</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold text-gray-600 mb-1">Cidade <span class="text-red-500">*</span></label><select id="customer-city" class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm"><option value="Palmeira das Missões">Palmeira das Missões</option></select></div>
+            <div><label class="block text-xs font-bold text-gray-600 mb-1">Bairro <span class="text-red-500">*</span></label><input id="customer-neighborhood" type="text" placeholder="Seu bairro" class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm"></div>
+          </div>
+          <div class="grid grid-cols-[2fr_1fr] gap-4">
+            <div><label class="block text-xs font-bold text-gray-600 mb-1">Rua/Avenida <span class="text-red-500">*</span></label><input id="customer-street" type="text" placeholder="Nome da rua" class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm"></div>
+            <div><label class="block text-xs font-bold text-gray-600 mb-1">Número <span class="text-red-500">*</span></label><input id="customer-number" type="text" placeholder="Nº" class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm"></div>
+          </div>
+          <div><label class="block text-xs font-bold text-gray-600 mb-1">Complemento / referência</label><input id="customer-complement" type="text" placeholder="Apto, bloco, perto de..." class="w-full p-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen text-sm"></div>
+        </div>
+
+        <div class="bg-fityellow-50 border border-fityellow-light rounded-xl p-4">
+          <label class="block text-sm font-bold text-gray-800 mb-1">Forma de pagamento</label>
+          <div class="flex items-center gap-2 text-fitgreen-dark font-black"><i class="ph-fill ph-pix-logo text-xl"></i> PIX</div>
+          <p class="text-xs text-gray-600 mt-1">No momento estamos aceitando somente Pix. A chave será enviada/confirmada pelo WhatsApp.</p>
+        </div>
+
+        <div><label class="block text-sm font-bold text-gray-700 mb-1">Observações gerais</label><textarea id="customer-notes" placeholder="Ex.: Sem cebola, embalar separado, deixar na portaria..." rows="3" class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitgreen resize-none text-sm"></textarea></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-900 text-gray-400 py-8 text-center mt-12 pb-32">
+    <div class="max-w-md mx-auto px-4"><div class="flex justify-center mb-4"><div class="bg-white/10 w-12 h-12 rounded-full flex items-center justify-center"><i class="ph ph-leaf text-gray-300 text-2xl"></i></div></div><h4 class="text-white font-bold mb-2">Fitbaê Delivery</h4><p class="text-sm mb-4">Comida saudável, saborosa e preparada com carinho.</p><a href="https://wa.me/5519999270698" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sm font-bold bg-white/10 hover:bg-fitgreen text-white px-4 py-2 rounded-full transition"><i class="ph ph-whatsapp-logo"></i> WhatsApp</a><p class="text-[10px] mt-6">&copy; 2026 Fitbaê. Todos os direitos reservados.</p></div>
+  </footer>
+
+  <div class="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_20px_rgba(0,0,0,.05)] p-4 z-50 rounded-t-[2rem]">
+    <div class="max-w-2xl mx-auto flex items-center gap-3">
+      <button onclick="handleClearAll()" class="w-12 h-12 rounded-2xl bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-colors shrink-0" title="Cancelar pedido"><i class="ph ph-trash text-xl"></i></button>
+      <button onclick="openConfirmationModal()" class="flex-1 bg-fitgreen text-white h-14 rounded-2xl font-extrabold text-lg shadow-float flex items-center justify-center gap-2 hover:bg-fitgreen-dark transition-all active:scale-95"><i class="ph ph-whatsapp-logo text-2xl text-fityellow"></i> Enviar pedido</button>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="fixed inset-0 z-[100] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-gray-900/60 modal-overlay" onclick="closeConfirmationModal()"></div>
+    <div id="modal-content" class="relative bg-white w-full max-w-md mx-4 rounded-3xl shadow-2xl p-6 scale-95 opacity-0 transition-all duration-300">
+      <button onclick="closeConfirmationModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center"><i class="ph ph-x font-bold"></i></button>
+      <div class="w-16 h-16 bg-green-100 text-fitgreen rounded-full flex items-center justify-center mx-auto mb-4"><i class="ph-fill ph-check-circle text-3xl"></i></div>
+      <h3 class="text-xl font-black text-center text-gray-900 mb-2">Tudo certo?</h3>
+      <p class="text-center text-gray-500 text-sm mb-6">Você será redirecionado para o WhatsApp da loja com o pedido pronto.</p>
+      <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
+        <div class="flex justify-between items-center mb-2 pb-2 border-b border-gray-200"><span class="text-sm font-bold text-gray-600">Total a pagar:</span><span class="text-lg font-black text-fitgreen" id="modal-total-value">R$ 0,00</span></div>
+        <div class="flex justify-between items-center"><span class="text-sm font-bold text-gray-600">Pagamento:</span><span class="text-sm font-bold text-gray-800">PIX</span></div>
+      </div>
+      <div class="flex gap-3"><button onclick="closeConfirmationModal()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold hover:bg-gray-50">Voltar</button><button onclick="executeFinalOrder()" class="flex-[2] py-3 rounded-xl bg-fitgreen text-white font-black shadow-md hover:bg-fitgreen-dark flex justify-center items-center gap-2"><i class="ph-fill ph-whatsapp-logo"></i> Confirmar</button></div>
+    </div>
+  </div>
+
+  <script>
+    const CONFIG = {
+      WHATSAPP_NUMBER: '5519999270698',
+      BASE_SANDWICH_PRICE: 22.90,
+      DELIVERY_FEE: 10.00,
+      STORE_OPEN: true,
+      STORAGE_KEY: 'fitbae_cart_final_v1'
+    };
+
+    const MENU = {
+      breads: [
         { id: 'b1', name: 'Pão branco macio', desc: 'Clássico e fofinho', icon: '🍞' },
         { id: 'b2', name: 'Pão italiano', desc: 'Casca crocante', icon: '🥖' },
         { id: 'b3', name: 'Pão integral', desc: 'Rico em fibras', icon: '🌾' },
         { id: 'b4', name: 'Pão 9 grãos', desc: 'Extra nutritivo', icon: '🌰' },
-        { id: 'b5', name: 'Rap10 integral', desc: 'Leve e fino', icon: '🌮' },
-        { id: 'b6', name: 'Pão de aveia', desc: 'Sem trigo', icon: '🥣' },
-        { id: 'b7', name: 'Pão s/ glúten', desc: 'Especial', icon: '✨' },
-        { id: 'b8', name: 'Tapioca prensada', desc: 'Sabor do Brasil', icon: '🥞' }
-    ],
-    proteins: [
+        { id: 'b5', name: 'Rap10 integral', desc: 'Leve e prático', icon: '🌮' },
+        { id: 'b6', name: 'Pão de aveia', desc: 'Sabor suave', icon: '🥣' },
+        { id: 'b7', name: 'Pão sem glúten', desc: 'Opção especial', icon: '✨' },
+        { id: 'b8', name: 'Tapioca prensada', desc: 'Leve e brasileira', icon: '🥞' }
+      ],
+      proteins: [
         { id: 'p1', name: 'Frango grelhado', desc: 'Cubos suculentos' },
         { id: 'p2', name: 'Frango desfiado', desc: 'Temperado na medida' },
         { id: 'p3', name: 'Carne moída', desc: 'Patinho magro' },
         { id: 'p4', name: 'Atum cremoso', desc: 'Com maionese light' },
-        { id: 'p5', name: 'Sem proteína', desc: 'Apenas salada e queijo' }
-    ],
-    salads: [
+        { id: 'p5', name: 'Sem proteína', desc: 'Apenas salada e extras' }
+      ],
+      salads: [
         { id: 'sl1', name: 'Alface americana' },
         { id: 'sl2', name: 'Rúcula fresca' },
-        { id: 'sl3', name: 'Tomate em rodelas' },
-        { id: 'sl5', name: 'Cebola roxa' },
-        { id: 'sl6', name: 'Milho verde' },
-        { id: 'sl7', name: 'Azeitona fatiada' },
-        { id: 'sl8', name: 'Picles' },
-        { id: 'sl9', name: 'Sem salada' }
-    ],
-    sauces: [
-        { id: 'sc1', name: 'Mostarda e Mel', desc: 'Doce e picante' },
+        { id: 'sl3', name: 'Tomate' },
+        { id: 'sl4', name: 'Cebola roxa' },
+        { id: 'sl5', name: 'Milho verde' },
+        { id: 'sl6', name: 'Azeitona' },
+        { id: 'sl7', name: 'Picles' },
+        { id: 'sl8', name: 'Sem salada' }
+      ],
+      sauces: [
+        { id: 'sc1', name: 'Mostarda e mel', desc: 'Doce e picante' },
         { id: 'sc2', name: 'Barbecue', desc: 'Sabor defumado' },
-        { id: 'sc3', name: 'Maionese Verde', desc: 'Ervas finas' },
-        { id: 'sc5', name: 'Sem molho', desc: 'Natural' }
-    ],
-    cheeses: [
-        { id: 'ch1', name: 'Queijo Prato', price: 4.00 },
-        { id: 'ch2', name: 'Muçarela', price: 4.00 },
-    ],
-    premium: [
+        { id: 'sc3', name: 'Maionese verde', desc: 'Ervas finas' },
+        { id: 'sc4', name: 'Sem molho', desc: 'Natural' }
+      ],
+      cheeses: [
+        { id: 'ch1', name: 'Queijo prato', price: 4.00 },
+        { id: 'ch2', name: 'Muçarela', price: 4.00 }
+      ],
+      premium: [
         { id: 'pr1', name: 'Ovo cozido', price: 3.00 },
-        { id: 'pr2', name: 'Ricota', price: 3.00 },
-    ],
-    drinks: [
+        { id: 'pr2', name: 'Ricota', price: 3.00 }
+      ],
+      drinks: [
         { id: 'd1', name: 'Coca-Cola Zero 350ml', price: 6.00, icon: '🥤' },
-        { id: 'd2', name: 'Suco Natural Laranja 400ml', price: 8.00, icon: '🍊' },
-        { id: 'd4', name: 'Água Mineral c/ Gás', price: 4.00, icon: '💧' },
-        { id: 'd5', name: 'Água Mineral s/ Gás', price: 4.00, icon: '💧' }
-    ],
-};
-
-// ==========================================
-// STATE MANAGEMENT
-// ==========================================
-
-// Global application state
-let STATE = {
-    orderMethod: 'delivery', // 'delivery' | 'pickup'
-    paymentMethod: 'pix',    // 'pix' | 'dinheiro' 
-    cart: {
-        sandwiches: [],
-        drinks: [],
-    },
-    currentSandwich: getEmptySandwichState()
-};
-
-/**
- * Returns a fresh, empty sandwich object for building.
- * @returns {Object}
- */
-function getEmptySandwichState() {
-    return {
-        bread: null,
-        protein: null,
-        salads: [],
-        sauce: null,
-        cheese: null,
-        extraProteins: [],
-        extraSauces: [],
-        premium: []
+        { id: 'd2', name: 'Suco natural de laranja 400ml', price: 8.00, icon: '🍊' },
+        { id: 'd3', name: 'Água mineral com gás', price: 4.00, icon: '💧' },
+        { id: 'd4', name: 'Água mineral sem gás', price: 4.00, icon: '💧' }
+      ]
     };
-}
 
-// ==========================================
-// INITIALIZATION & LIFECYCLE
-// ==========================================
+    let STATE = {
+      orderMethod: 'delivery',
+      cart: { sandwiches: [], drinks: [] },
+      currentSandwich: getEmptySandwichState()
+    };
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Check if store is open
-    if (!CONFIG.STORE_OPEN) {
+    function getEmptySandwichState() {
+      return { bread: null, protein: null, salads: [], sauce: null, cheese: null, extraProteins: [], extraSauces: [], premium: [] };
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      addStepNumberStyle();
+      loadCartFromStorage();
+      renderAllStaticUI();
+      updateGlobalUI();
+      handleMethodChange(document.querySelector('input[name="orderMethod"]:checked'));
+      window.addEventListener('scroll', updateScrollProgress);
+      if (!CONFIG.STORE_OPEN) {
         document.getElementById('store-closed-banner').classList.remove('hidden');
-        disableAllInteractions();
-    }
-
-    // 2. Load Cart from LocalStorage
-    loadCartFromStorage();
-
-    // 3. Render all UI components
-    initUI();
-    
-    // 4. Setup Scroll Event for Progress Bar
-    window.addEventListener('scroll', updateScrollProgress);
-});
-
-function initUI() {
-    renderGrid('breads-container', MENU.breads, 'bread', 'single');
-    renderGrid('proteins-container', MENU.proteins, 'protein', 'single');
-    renderGrid('salads-container', MENU.salads, 'salads', 'multiple');
-    renderGrid('sauces-container', MENU.sauces, 'sauce', 'single');
-    
-    renderUpsellGrid('cheeses-container', MENU.cheeses, 'cheese', 'single');
-    renderUpsellGrid('extra-proteins-container', MENU.proteins.filter(p => p.id !== 'p5'), 'extraProteins', 'multiple');
-    renderUpsellGrid('extra-sauces-container', MENU.sauces.filter(s => s.id !== 'sc5'), 'extraSauces', 'multiple');
-    renderUpsellGrid('premium-container', MENU.premium, 'premium', 'multiple');
-    
-    renderProductsList('drinks-container', MENU.drinks, 'drinks');
-    renderProductsList('desserts-container', MENU.desserts, 'desserts');
-
-    updateGlobalUI();
-}
-
-// ==========================================
-// UI RENDERING ENGINE
-// ==========================================
-
-/**
- * Renders main sandwich components (Breads, Proteins, etc.)
- */
-function renderGrid(containerId, dataArray, stateKey, type) {
-    const container = document.getElementById(containerId);
-    let html = '';
-
-    dataArray.forEach(item => {
-        const isSelected = type === 'single' 
-            ? STATE.currentSandwich[stateKey]?.id === item.id 
-            : STATE.currentSandwich[stateKey].some(i => i.id === item.id);
-
-        const activeClasses = isSelected 
-            ? "border-fitgreen bg-fitgreen-50 ring-1 ring-fitgreen shadow-sm" 
-            : "border-gray-200 bg-white hover:border-fitgreen-200";
-        
-        const checkIcon = isSelected 
-            ? `<i class="ph-fill ph-check-circle text-fitgreen text-lg absolute top-2 right-2"></i>` 
-            : ``;
-
-        // Action definition
-        const action = type === 'single' 
-            ? `handleSelectSingle('${stateKey}', '${item.id}')` 
-            : `handleToggleMultiple('${stateKey}', '${item.id}')`;
-
-        html += `
-            <button onclick="${action}" class="relative w-full text-left p-4 rounded-xl border transition-all duration-200 flex flex-col justify-center min-h-[5rem] group overflow-hidden ${activeClasses}">
-                ${checkIcon}
-                <div class="flex items-center gap-2 mb-1">
-                    ${item.icon ? `<span class="text-xl">${item.icon}</span>` : ''}
-                    <span class="font-bold text-gray-800 group-hover:text-fitgreen-dark transition-colors text-sm">${item.name}</span>
-                </div>
-                ${item.desc ? `<span class="text-xs text-gray-500">${item.desc}</span>` : ''}
-                
-                ${isSelected ? `<div class="absolute bottom-0 left-0 h-1 bg-fitgreen w-full animate-fade-in"></div>` : ''}
-            </button>
-        `;
+        document.getElementById('store-status-pill').innerHTML = '<span class="w-2 h-2 rounded-full bg-red-300"></span> FECHADO AGORA';
+      }
     });
 
-    container.innerHTML = html;
-}
-
-/**
- * Renders upsell grids (Cheeses, Extra proteins, etc.)
- */
-function renderUpsellGrid(containerId, dataArray, stateKey, type) {
-    const container = document.getElementById(containerId);
-    let html = '';
-
-    dataArray.forEach(item => {
-        const isSelected = type === 'single' 
-            ? STATE.currentSandwich[stateKey]?.id === item.id 
-            : STATE.currentSandwich[stateKey].some(i => i.id === item.id);
-
-        const activeClasses = isSelected 
-            ? "border-fityellow bg-fityellow-50 ring-1 ring-fityellow shadow-sm" 
-            : "border-gray-200 bg-white hover:border-fityellow-light";
-
-        const action = type === 'single' 
-            ? `handleSelectSingle('${stateKey}', '${item.id}')` 
-            : `handleToggleMultiple('${stateKey}', '${item.id}')`;
-
-        // Calculate price dynamically (Proteins extra = 7, Sauces extra = 2, others via object prop)
-        let priceValue = item.price;
-        if(stateKey === 'extraProteins') priceValue = 7.00;
-        if(stateKey === 'extraSauces') priceValue = 2.00;
-
-        html += `
-            <button onclick="${action}" class="w-full text-left p-3 rounded-xl border transition-all duration-200 flex justify-between items-center ${activeClasses}">
-                <span class="font-bold text-gray-700 text-sm ${isSelected ? 'text-gray-900' : ''}">${item.name}</span>
-                ${isSelected 
-                    ? `<i class="ph-fill ph-check-circle text-fityellow-dark text-lg"></i>`
-                    : `<i class="ph ph-plus-circle text-gray-300"></i>`
-                }
-            </button>
-        `;
-    });
-
-    container.innerHTML = html;
-}
-
-/**
- * Renders standalone products (Drinks, Desserts) that go straight to cart
- */
-function renderProductsList(containerId, dataArray, categoryKey) {
-    const container = document.getElementById(containerId);
-    let html = '';
-
-    dataArray.forEach(item => {
-        // Find how many of this item are in the cart
-        const cartItems = STATE.cart[categoryKey].filter(i => i.id === item.id);
-        const quantity = cartItems.length;
-
-        html += `
-            <div class="flex items-center justify-between p-3 border border-gray-100 rounded-xl bg-gray-50 hover:bg-white hover:shadow-sm transition-all">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-xl border border-gray-100">
-                        ${item.icon || '📦'}
-                    </div>
-                    <div>
-                        <p class="font-bold text-gray-800 text-sm">${item.name}</p>
-                        <p class="text-xs text-gray-500 font-medium">${formatCurrency(item.price)}</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-3 bg-white p-1 rounded-lg border border-gray-200 shadow-sm">
-                    <button onclick="handleRemoveProduct('${categoryKey}', '${item.id}')" class="w-8 h-8 flex items-center justify-center rounded-md text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors disabled:opacity-30" ${quantity === 0 ? 'disabled' : ''}>
-                        <i class="ph ph-minus font-bold"></i>
-                    </button>
-                    <span class="font-bold text-gray-800 w-4 text-center text-sm">${quantity}</span>
-                    <button onclick="handleAddProduct('${categoryKey}', '${item.id}')" class="w-8 h-8 flex items-center justify-center rounded-md text-fitgreen bg-fitgreen-50 hover:bg-fitgreen hover:text-white transition-colors">
-                        <i class="ph ph-plus font-bold"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-    });
-
-    container.innerHTML = html;
-}
-
-// ==========================================
-// EVENT HANDLERS (SANDWICH BUILDER)
-// ==========================================
-
-function handleSelectSingle(stateKey, itemId) {
-    if (!CONFIG.STORE_OPEN) return showToast("Loja fechada", "error");
-
-    // Find the item in the corresponding menu array
-    let sourceArray = [];
-    if(stateKey === 'bread') sourceArray = MENU.breads;
-    if(stateKey === 'protein') sourceArray = MENU.proteins;
-    if(stateKey === 'sauce') sourceArray = MENU.sauces;
-    if(stateKey === 'cheese') sourceArray = MENU.cheeses;
-
-    const itemObj = sourceArray.find(i => i.id === itemId);
-
-    // Toggle logic for optional single items (cheese)
-    if (stateKey === 'cheese' && STATE.currentSandwich[stateKey]?.id === itemId) {
-        STATE.currentSandwich[stateKey] = null;
-    } else {
-        STATE.currentSandwich[stateKey] = itemObj;
+    function addStepNumberStyle() {
+      document.querySelectorAll('.step-number').forEach(el => {
+        el.className = 'w-8 h-8 rounded-full bg-fitgreen text-white flex items-center justify-center font-bold shrink-0 shadow-md';
+      });
     }
 
-    updateGlobalUI();
-}
-
-function handleToggleMultiple(stateKey, itemId) {
-    if (!CONFIG.STORE_OPEN) return showToast("Loja fechada", "error");
-
-    let sourceArray = [];
-    if(stateKey === 'salads') sourceArray = MENU.salads;
-    if(stateKey === 'extraProteins') sourceArray = MENU.proteins;
-    if(stateKey === 'extraSauces') sourceArray = MENU.sauces;
-    if(stateKey === 'premium') sourceArray = MENU.premium;
-
-    const itemObj = sourceArray.find(i => i.id === itemId);
-    const existingIndex = STATE.currentSandwich[stateKey].findIndex(i => i.id === itemId);
-
-    if (existingIndex > -1) {
-        // Remove
-        STATE.currentSandwich[stateKey].splice(existingIndex, 1);
-    } else {
-        // Add
-        STATE.currentSandwich[stateKey].push(itemObj);
+    function renderAllStaticUI() {
+      renderChoiceGrid('breads-container', MENU.breads, 'bread', 'single');
+      renderChoiceGrid('proteins-container', MENU.proteins, 'protein', 'single');
+      renderChoiceGrid('salads-container', MENU.salads, 'salads', 'multiple');
+      renderChoiceGrid('sauces-container', MENU.sauces, 'sauce', 'single');
+      renderUpsellGrid('cheeses-container', MENU.cheeses, 'cheese', 'single');
+      renderUpsellGrid('extra-proteins-container', MENU.proteins.filter(p => p.id !== 'p5'), 'extraProteins', 'multiple');
+      renderUpsellGrid('extra-sauces-container', MENU.sauces.filter(s => s.id !== 'sc4'), 'extraSauces', 'multiple');
+      renderUpsellGrid('premium-container', MENU.premium, 'premium', 'multiple');
+      renderDrinks();
     }
 
-    updateGlobalUI();
-}
-
-function handleAddSandwichToCart() {
-    if (!CONFIG.STORE_OPEN) return;
-
-    const errors = validateCurrentSandwich();
-    if (errors.length > 0) {
-        showToast("Faltam itens no lanche:\n" + errors.join(", "), "error");
-        return;
+    function renderChoiceGrid(containerId, data, stateKey, type) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = data.map(item => {
+        const selected = isSelected(stateKey, item.id, type);
+        const action = type === 'single' ? `handleSelectSingle('${stateKey}','${item.id}')` : `handleToggleMultiple('${stateKey}','${item.id}')`;
+        return `<button type="button" onclick="${action}" class="relative w-full text-left p-4 rounded-xl border transition-all duration-200 flex flex-col justify-center min-h-[5rem] group overflow-hidden ${selected ? 'border-fitgreen bg-fitgreen-50 ring-1 ring-fitgreen shadow-sm' : 'border-gray-200 bg-white hover:border-fitgreen-200'}">
+          ${selected ? '<i class="ph-fill ph-check-circle text-fitgreen text-lg absolute top-2 right-2"></i>' : ''}
+          <div class="flex items-center gap-2 mb-1">${item.icon ? `<span class="text-xl">${item.icon}</span>` : ''}<span class="font-bold text-gray-800 group-hover:text-fitgreen-dark transition-colors text-sm pr-5">${item.name}</span></div>
+          ${item.desc ? `<span class="text-xs text-gray-500">${item.desc}</span>` : ''}
+        </button>`;
+      }).join('');
     }
 
-    // Clone current sandwich to avoid reference issues
-    const sandwichToSave = JSON.parse(JSON.stringify(STATE.currentSandwich));
-    sandwichToSave.subtotal = calculateCurrentSandwichTotal();
-    sandwichToSave.uuid = generateUUID(); // Unique ID for cart item
-
-    STATE.cart.sandwiches.push(sandwichToSave);
-    
-    showToast("Lanche adicionado ao pedido! 🥪", "success");
-    
-    // Reset builder
-    STATE.currentSandwich = getEmptySandwichState();
-    
-    updateGlobalUI();
-    saveCartToStorage();
-
-    // Scroll slightly up to show the new empty state
-    document.getElementById('builder-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function handleCancelCurrent() {
-    if(confirm("Tem certeza que deseja limpar o lanche que está montando?")) {
-        STATE.currentSandwich = getEmptySandwichState();
-        updateGlobalUI();
-        showToast("Lanche limpo.", "info");
-    }
-}
-
-// ==========================================
-// EVENT HANDLERS (PRODUCTS & CART)
-// ==========================================
-
-function handleAddProduct(category, itemId) {
-    if (!CONFIG.STORE_OPEN) return showToast("Loja fechada", "error");
-
-    const itemObj = MENU[category].find(i => i.id === itemId);
-    STATE.cart[category].push({ ...itemObj, uuid: generateUUID() });
-    
-    updateGlobalUI();
-    saveCartToStorage();
-}
-
-function handleRemoveProduct(category, itemId) {
-    // Find the last added item of this type to remove
-    const itemsOfType = STATE.cart[category].filter(i => i.id === itemId);
-    if(itemsOfType.length === 0) return;
-
-    const uuidToRemove = itemsOfType[itemsOfType.length - 1].uuid;
-    STATE.cart[category] = STATE.cart[category].filter(i => i.uuid !== uuidToRemove);
-
-    updateGlobalUI();
-    saveCartToStorage();
-}
-
-function removeCartItem(category, uuid) {
-    STATE.cart[category] = STATE.cart[category].filter(i => i.uuid !== uuid);
-    updateGlobalUI();
-    saveCartToStorage();
-    showToast("Item removido.", "info");
-}
-
-function handleClearAll() {
-    if(STATE.cart.sandwiches.length === 0 && STATE.cart.drinks.length === 0 && STATE.cart.desserts.length === 0) {
-        return showToast("O carrinho já está vazio.", "info");
+    function renderUpsellGrid(containerId, data, stateKey, type) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = data.map(item => {
+        const selected = isSelected(stateKey, item.id, type);
+        const action = type === 'single' ? `handleSelectSingle('${stateKey}','${item.id}')` : `handleToggleMultiple('${stateKey}','${item.id}')`;
+        return `<button type="button" onclick="${action}" class="w-full text-left p-3 rounded-xl border transition-all duration-200 flex justify-between items-center ${selected ? 'border-fityellow bg-fityellow-50 ring-1 ring-fityellow shadow-sm' : 'border-gray-200 bg-white hover:border-fityellow-light'}">
+          <span class="font-bold text-gray-700 text-sm">${item.name}</span>${selected ? '<i class="ph-fill ph-check-circle text-fityellow-dark text-lg"></i>' : '<i class="ph ph-plus-circle text-gray-300"></i>'}
+        </button>`;
+      }).join('');
     }
 
-    if(confirm("Deseja realmente cancelar todo o pedido e esvaziar o carrinho?")) {
-        STATE.cart = { sandwiches: [], drinks: [], desserts: [] };
-        STATE.currentSandwich = getEmptySandwichState();
-        updateGlobalUI();
-        saveCartToStorage();
-        showToast("Pedido cancelado. Carrinho limpo.", "info");
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-}
-
-// ==========================================
-// CHECKOUT FORM LOGIC
-// ==========================================
-
-function handleMethodChange(radioElement) {
-    STATE.orderMethod = radioElement.value;
-    const addressSection = document.getElementById("address-section");
-    
-    if(STATE.orderMethod === 'delivery') {
-        addressSection.style.display = 'block';
-        // Minor animation
-        addressSection.classList.add('animate-fade-in');
-    } else {
-        addressSection.style.display = 'none';
-    }
-    
-    updateGlobalUI(); // Update totals
-}
-
-function handlePaymentChange(selectElement) {
-    STATE.paymentMethod = selectElement.value;
-    const changeSection = document.getElementById("change-section");
-    
-    if(STATE.paymentMethod === 'dinheiro') {
-        changeSection.classList.remove('hidden');
-        changeSection.classList.add('animate-fade-in');
-    } else {
-        changeSection.classList.add('hidden');
-        document.getElementById("payment-change").value = ""; // clear value
-    }
-}
-
-// ==========================================
-// CALCULATIONS & FORMATTING
-// ==========================================
-
-function calculateCurrentSandwichTotal() {
-    let total = CONFIG.BASE_SANDWICH_PRICE;
-    
-    if(STATE.currentSandwich.cheese) total += STATE.currentSandwich.cheese.price;
-    total += STATE.currentSandwich.extraProteins.length * 7.00;
-    total += STATE.currentSandwich.extraSauces.length * 2.00;
-    
-    STATE.currentSandwich.premium.forEach(p => total += p.price);
-    
-    return total;
-}
-
-function calculateCartTotals() {
-    let subtotal = 0;
-    
-    // Sandwiches
-    STATE.cart.sandwiches.forEach(s => subtotal += s.subtotal);
-    // Drinks
-    STATE.cart.drinks.forEach(d => subtotal += d.price);
-    // Desserts
-    STATE.cart.desserts.forEach(d => subtotal += d.price);
-
-    const delivery = STATE.orderMethod === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
-    const grandTotal = subtotal + delivery;
-
-    return { subtotal, delivery, grandTotal };
-}
-
-function formatCurrency(value) {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
-function generateUUID() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-}
-
-// ==========================================
-// UI UPDATES (The Core Sync Function)
-// ==========================================
-
-function updateGlobalUI() {
-    // 1. Re-render selections
-    initUI(); // Efficient enough for this scale
-
-    // 2. Update Builder Subtotal
-    document.getElementById('btn-current-subtotal').innerText = formatCurrency(calculateCurrentSandwichTotal());
-    
-    // 3. Update Title tracking
-    const sandwichCount = STATE.cart.sandwiches.length + 1;
-    document.getElementById('current-sandwich-title').innerText = `Montando Lanche ${sandwichCount}`;
-
-    // 4. Update Cart Preview & Headers
-    const totals = calculateCartTotals();
-    const totalItemsCount = STATE.cart.sandwiches.length + STATE.cart.drinks.length + STATE.cart.desserts.length;
-    
-    document.getElementById('header-cart-badge').innerText = totalItemsCount;
-    if(totalItemsCount > 0) {
-        document.getElementById('header-cart-badge').classList.remove('scale-0');
-        document.getElementById('cart-preview').classList.remove('hidden');
-        document.getElementById('cart-preview-count').innerText = totalItemsCount;
-        document.getElementById('cart-preview-total').innerText = formatCurrency(totals.subtotal);
-    } else {
-        document.getElementById('header-cart-badge').classList.add('scale-0');
-        document.getElementById('cart-preview').classList.add('hidden');
+    function renderDrinks() {
+      const container = document.getElementById('drinks-container');
+      container.innerHTML = MENU.drinks.map(item => {
+        const qty = STATE.cart.drinks.filter(d => d.id === item.id).length;
+        return `<div class="flex items-center justify-between p-3 border border-gray-100 rounded-xl bg-gray-50 hover:bg-white hover:shadow-sm transition-all">
+          <div class="flex items-center gap-3"><div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-xl border border-gray-100">${item.icon}</div><div><p class="font-bold text-gray-800 text-sm">${item.name}</p><p class="text-xs text-gray-500 font-medium">${formatCurrency(item.price)}</p></div></div>
+          <div class="flex items-center gap-3 bg-white p-1 rounded-lg border border-gray-200 shadow-sm"><button type="button" onclick="handleRemoveDrink('${item.id}')" class="w-8 h-8 flex items-center justify-center rounded-md text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors disabled:opacity-30" ${qty === 0 ? 'disabled' : ''}><i class="ph ph-minus font-bold"></i></button><span class="font-bold text-gray-800 w-4 text-center text-sm">${qty}</span><button type="button" onclick="handleAddDrink('${item.id}')" class="w-8 h-8 flex items-center justify-center rounded-md text-fitgreen bg-fitgreen-50 hover:bg-fitgreen hover:text-white transition-colors"><i class="ph ph-plus font-bold"></i></button></div>
+        </div>`;
+      }).join('');
     }
 
-    // 5. Update Cart Section Content
-    updateCartSection(totals, totalItemsCount);
-}
-
-function updateCartSection(totals, totalItemsCount) {
-    document.getElementById('cart-section-count').innerText = totalItemsCount;
-    document.getElementById('summary-subtotal').innerText = formatCurrency(totals.subtotal);
-    
-    const deliveryRow = document.getElementById('summary-delivery-row');
-    if(STATE.orderMethod === 'delivery') {
-        deliveryRow.style.display = 'flex';
-        document.getElementById('summary-delivery-fee').innerText = formatCurrency(totals.delivery);
-    } else {
-        deliveryRow.style.display = 'none';
-    }
-    
-    document.getElementById('summary-grand-total').innerText = formatCurrency(totals.grandTotal);
-
-    const emptyState = document.getElementById('empty-cart-state');
-    const itemsContainer = document.getElementById('cart-items-container');
-
-    if(totalItemsCount === 0) {
-        emptyState.style.display = 'block';
-        itemsContainer.style.display = 'none';
-        return;
+    function isSelected(stateKey, itemId, type) {
+      return type === 'single'
+        ? STATE.currentSandwich[stateKey]?.id === itemId
+        : STATE.currentSandwich[stateKey].some(item => item.id === itemId);
     }
 
-    emptyState.style.display = 'none';
-    itemsContainer.style.display = 'block';
-
-    let html = '';
-
-    // Render Sandwiches in Cart
-    STATE.cart.sandwiches.forEach((sandwich, index) => {
-        html += `
-            <div class="bg-gray-800 rounded-xl p-4 relative group border border-gray-700">
-                <button onclick="removeCartItem('sandwiches', '${sandwich.uuid}')" class="absolute top-3 right-3 text-gray-500 hover:text-red-400 transition-colors bg-gray-900 rounded-lg p-1.5" title="Remover lanche">
-                    <i class="ph ph-trash font-bold"></i>
-                </button>
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-fitgreen text-white text-[10px] font-black px-2 py-1 rounded">LANCHE ${index + 1}</span>
-                    <span class="font-bold text-white text-sm">${formatCurrency(sandwich.subtotal)}</span>
-                </div>
-                <div class="text-xs text-gray-400 leading-relaxed space-y-1 pr-8">
-                    <p><b class="text-gray-300">Base:</b> ${sandwich.bread.name}</p>
-                    <p><b class="text-gray-300">Prot:</b> ${sandwich.protein.name}</p>
-                    <p><b class="text-gray-300">Saladas:</b> ${sandwich.salads.map(s=>s.name).join(', ')}</p>
-                    <p><b class="text-gray-300">Molho:</b> ${sandwich.sauce.name}</p>
-                    ${sandwich.cheese ? `<p class="text-fityellow-light"><b class="text-fityellow">Queijo (+):</b> ${sandwich.cheese.name}</p>` : ''}
-                    ${sandwich.extraProteins.length > 0 ? `<p class="text-fityellow-light"><b class="text-fityellow">Prot. Extra (+):</b> ${sandwich.extraProteins.map(p=>p.name).join(', ')}</p>` : ''}
-                    ${sandwich.extraSauces.length > 0 ? `<p class="text-fityellow-light"><b class="text-fityellow">Molho Extra (+):</b> ${sandwich.extraSauces.map(s=>s.name).join(', ')}</p>` : ''}
-                    ${sandwich.premium.length > 0 ? `<p class="text-fityellow-light"><b class="text-fityellow">Premium (+):</b> ${sandwich.premium.map(p=>p.name).join(', ')}</p>` : ''}
-                </div>
-            </div>
-        `;
-    });
-
-    // Grouping Drinks for cleaner display
-    const drinkCounts = countItems(STATE.cart.drinks);
-    for(const [id, data] of Object.entries(drinkCounts)) {
-        html += `
-            <div class="bg-gray-800 rounded-xl p-3 flex justify-between items-center border border-gray-700">
-                <div class="flex items-center gap-3">
-                    <span class="text-xl">${data.item.icon}</span>
-                    <div>
-                        <p class="font-bold text-sm text-gray-200">${data.count}x ${data.item.name}</p>
-                        <p class="text-xs text-gray-500">${formatCurrency(data.item.price * data.count)}</p>
-                    </div>
-                </div>
-                <button onclick="removeCartItem('drinks', '${data.item.uuid}')" class="text-gray-500 hover:text-red-400 p-2"><i class="ph ph-trash"></i></button>
-            </div>
-        `;
+    function findItem(stateKey, itemId) {
+      const map = { bread: MENU.breads, protein: MENU.proteins, sauce: MENU.sauces, cheese: MENU.cheeses, salads: MENU.salads, extraProteins: MENU.proteins, extraSauces: MENU.sauces, premium: MENU.premium };
+      return map[stateKey].find(item => item.id === itemId);
     }
 
-    // Grouping Desserts
-    const dessertCounts = countItems(STATE.cart.desserts);
-    for(const [id, data] of Object.entries(dessertCounts)) {
-        html += `
-            <div class="bg-gray-800 rounded-xl p-3 flex justify-between items-center border border-gray-700">
-                <div class="flex items-center gap-3">
-                    <span class="text-xl">${data.item.icon}</span>
-                    <div>
-                        <p class="font-bold text-sm text-gray-200">${data.count}x ${data.item.name}</p>
-                        <p class="text-xs text-gray-500">${formatCurrency(data.item.price * data.count)}</p>
-                    </div>
-                </div>
-                <button onclick="removeCartItem('desserts', '${data.item.uuid}')" class="text-gray-500 hover:text-red-400 p-2"><i class="ph ph-trash"></i></button>
-            </div>
-        `;
+    function handleSelectSingle(stateKey, itemId) {
+      if (!CONFIG.STORE_OPEN) return showToast('Loja fechada no momento.', 'error');
+      const current = STATE.currentSandwich[stateKey];
+      if (stateKey === 'cheese' && current?.id === itemId) STATE.currentSandwich[stateKey] = null;
+      else STATE.currentSandwich[stateKey] = findItem(stateKey, itemId);
+      renderAllStaticUI();
+      updateGlobalUI();
     }
 
-    itemsContainer.innerHTML = html;
-}
+    function handleToggleMultiple(stateKey, itemId) {
+      if (!CONFIG.STORE_OPEN) return showToast('Loja fechada no momento.', 'error');
+      const item = findItem(stateKey, itemId);
+      const arr = STATE.currentSandwich[stateKey];
 
-/**
- * Helper to count duplicate items (drinks/desserts) for display
- */
-function countItems(array) {
-    return array.reduce((acc, item) => {
-        if(!acc[item.id]) acc[item.id] = { count: 0, item: item };
+      if (stateKey === 'salads' && item.name === 'Sem salada') {
+        STATE.currentSandwich.salads = arr.some(x => x.id === itemId) ? [] : [item];
+      } else if (stateKey === 'salads') {
+        STATE.currentSandwich.salads = arr.filter(x => x.name !== 'Sem salada');
+        toggleArrayItem(STATE.currentSandwich.salads, item);
+      } else {
+        toggleArrayItem(arr, item);
+      }
+
+      renderAllStaticUI();
+      updateGlobalUI();
+    }
+
+    function toggleArrayItem(arr, item) {
+      const index = arr.findIndex(x => x.id === item.id);
+      if (index >= 0) arr.splice(index, 1);
+      else arr.push(item);
+    }
+
+    function handleAddSandwichToCart() {
+      if (!CONFIG.STORE_OPEN) return showToast('Loja fechada no momento.', 'error');
+      const errors = validateCurrentSandwich();
+      if (errors.length) return showToast('Não finalizei: faltou selecionar ' + errors.join(', ') + '.', 'error');
+      const sandwich = JSON.parse(JSON.stringify(STATE.currentSandwich));
+      sandwich.subtotal = calculateCurrentSandwichTotal();
+      sandwich.uuid = cryptoRandomId();
+      STATE.cart.sandwiches.push(sandwich);
+      STATE.currentSandwich = getEmptySandwichState();
+      saveCartToStorage();
+      renderAllStaticUI();
+      updateGlobalUI();
+      showToast('Lanche adicionado ao carrinho.', 'success');
+      scrollToCart();
+    }
+
+    function handleCancelCurrent() {
+      STATE.currentSandwich = getEmptySandwichState();
+      renderAllStaticUI();
+      updateGlobalUI();
+      showToast('Lanche em montagem foi limpo.', 'info');
+    }
+
+    function handleAddDrink(itemId) {
+      const item = MENU.drinks.find(d => d.id === itemId);
+      STATE.cart.drinks.push({ ...item, uuid: cryptoRandomId() });
+      saveCartToStorage();
+      renderDrinks();
+      updateGlobalUI();
+    }
+
+    function handleRemoveDrink(itemId) {
+      const idx = STATE.cart.drinks.map(d => d.id).lastIndexOf(itemId);
+      if (idx >= 0) STATE.cart.drinks.splice(idx, 1);
+      saveCartToStorage();
+      renderDrinks();
+      updateGlobalUI();
+    }
+
+    function removeCartItem(category, uuid) {
+      STATE.cart[category] = STATE.cart[category].filter(item => item.uuid !== uuid);
+      saveCartToStorage();
+      renderDrinks();
+      updateGlobalUI();
+      showToast('Item removido.', 'info');
+    }
+
+    function handleClearAll() {
+      if (getTotalItemsCount() === 0 && !hasStartedSandwich()) return showToast('O carrinho já está vazio.', 'info');
+      if (!confirm('Deseja realmente limpar todo o pedido?')) return;
+      STATE.cart = { sandwiches: [], drinks: [] };
+      STATE.currentSandwich = getEmptySandwichState();
+      saveCartToStorage();
+      renderAllStaticUI();
+      updateGlobalUI();
+      showToast('Pedido limpo.', 'info');
+      scrollToTop();
+    }
+
+    function handleMethodChange(radioElement) {
+      STATE.orderMethod = radioElement?.value || 'delivery';
+      const address = document.getElementById('address-section');
+      if (STATE.orderMethod === 'delivery') address.style.display = 'block';
+      else address.style.display = 'none';
+      updateGlobalUI();
+    }
+
+    function calculateCurrentSandwichTotal() {
+      let total = CONFIG.BASE_SANDWICH_PRICE;
+      if (STATE.currentSandwich.cheese) total += STATE.currentSandwich.cheese.price;
+      total += STATE.currentSandwich.extraProteins.length * 7;
+      total += STATE.currentSandwich.extraSauces.length * 2;
+      STATE.currentSandwich.premium.forEach(item => total += item.price);
+      return total;
+    }
+
+    function calculateCartTotals() {
+      const subtotalSandwiches = STATE.cart.sandwiches.reduce((sum, item) => sum + item.subtotal, 0);
+      const subtotalDrinks = STATE.cart.drinks.reduce((sum, item) => sum + item.price, 0);
+      const subtotal = subtotalSandwiches + subtotalDrinks;
+      const delivery = STATE.orderMethod === 'delivery' ? CONFIG.DELIVERY_FEE : 0;
+      return { subtotal, delivery, grandTotal: subtotal + delivery };
+    }
+
+    function updateGlobalUI() {
+      document.getElementById('btn-current-subtotal').innerText = formatCurrency(calculateCurrentSandwichTotal());
+      document.getElementById('current-sandwich-title').innerText = `Montando lanche ${STATE.cart.sandwiches.length + 1}`;
+      const totals = calculateCartTotals();
+      const totalItems = getTotalItemsCount();
+
+      const badge = document.getElementById('header-cart-badge');
+      badge.innerText = totalItems;
+      badge.classList.toggle('scale-0', totalItems === 0);
+
+      const preview = document.getElementById('cart-preview');
+      preview.classList.toggle('hidden', totalItems === 0);
+      preview.classList.toggle('flex', totalItems > 0);
+      document.getElementById('cart-preview-count').innerText = totalItems;
+      document.getElementById('cart-preview-total').innerText = formatCurrency(totals.grandTotal);
+
+      updateCartSection(totals, totalItems);
+    }
+
+    function updateCartSection(totals, totalItems) {
+      document.getElementById('cart-section-count').innerText = totalItems;
+      document.getElementById('summary-subtotal').innerText = formatCurrency(totals.subtotal);
+      document.getElementById('summary-delivery-fee').innerText = formatCurrency(totals.delivery);
+      document.getElementById('summary-delivery-row').style.display = STATE.orderMethod === 'delivery' ? 'flex' : 'none';
+      document.getElementById('summary-grand-total').innerText = formatCurrency(totals.grandTotal);
+
+      const empty = document.getElementById('empty-cart-state');
+      const container = document.getElementById('cart-items-container');
+      if (totalItems === 0) { empty.style.display = 'block'; container.classList.add('hidden'); return; }
+      empty.style.display = 'none';
+      container.classList.remove('hidden');
+      container.innerHTML = buildCartHTML();
+    }
+
+    function buildCartHTML() {
+      let html = '';
+      STATE.cart.sandwiches.forEach((s, idx) => {
+        html += `<div class="bg-gray-800 rounded-xl p-4 relative border border-gray-700">
+          <button onclick="removeCartItem('sandwiches','${s.uuid}')" class="absolute top-3 right-3 text-gray-500 hover:text-red-400 bg-gray-900 rounded-lg p-1.5" title="Remover"><i class="ph ph-trash"></i></button>
+          <div class="flex items-center gap-2 mb-2"><span class="bg-fitgreen text-white text-[10px] font-black px-2 py-1 rounded">LANCHE ${idx + 1}</span><span class="font-bold text-white text-sm">${formatCurrency(s.subtotal)}</span></div>
+          <div class="text-xs text-gray-400 leading-relaxed space-y-1 pr-8">
+            <p><b class="text-gray-300">Base:</b> ${s.bread.name}</p><p><b class="text-gray-300">Proteína:</b> ${s.protein.name}</p><p><b class="text-gray-300">Saladas:</b> ${s.salads.map(x => x.name).join(', ')}</p><p><b class="text-gray-300">Molho:</b> ${s.sauce.name}</p>
+            ${s.cheese ? `<p class="text-fityellow-light"><b class="text-fityellow">Queijo:</b> ${s.cheese.name}</p>` : ''}
+            ${s.extraProteins.length ? `<p class="text-fityellow-light"><b class="text-fityellow">Proteína extra:</b> ${s.extraProteins.map(x => x.name).join(', ')}</p>` : ''}
+            ${s.extraSauces.length ? `<p class="text-fityellow-light"><b class="text-fityellow">Molho extra:</b> ${s.extraSauces.map(x => x.name).join(', ')}</p>` : ''}
+            ${s.premium.length ? `<p class="text-fityellow-light"><b class="text-fityellow">Premium:</b> ${s.premium.map(x => x.name).join(', ')}</p>` : ''}
+          </div></div>`;
+      });
+
+      const drinks = groupItems(STATE.cart.drinks);
+      Object.values(drinks).forEach(({ item, count }) => {
+        html += `<div class="bg-gray-800 rounded-xl p-3 flex justify-between items-center border border-gray-700"><div class="flex items-center gap-3"><span class="text-xl">${item.icon}</span><div><p class="font-bold text-sm text-gray-200">${count}x ${item.name}</p><p class="text-xs text-gray-500">${formatCurrency(item.price * count)}</p></div></div><button onclick="removeCartItem('drinks','${item.uuid}')" class="text-gray-500 hover:text-red-400 p-2"><i class="ph ph-trash"></i></button></div>`;
+      });
+      return html;
+    }
+
+    function groupItems(items) {
+      return items.reduce((acc, item) => {
+        if (!acc[item.id]) acc[item.id] = { item: { ...item }, count: 0 };
         acc[item.id].count += 1;
-        // Keep latest uuid to allow removing 1 by 1
-        acc[item.id].item.uuid = item.uuid; 
+        acc[item.id].item.uuid = item.uuid;
         return acc;
-    }, {});
-}
+      }, {});
+    }
 
-// ==========================================
-// VALIDATIONS & SUBMISSION
-// ==========================================
+    function validateCurrentSandwich() {
+      const errors = [];
+      if (!STATE.currentSandwich.bread) errors.push('o pão');
+      if (!STATE.currentSandwich.protein) errors.push('a proteína');
+      if (STATE.currentSandwich.salads.length === 0) errors.push('a salada');
+      if (!STATE.currentSandwich.sauce) errors.push('o molho');
+      return errors;
+    }
 
-function validateCurrentSandwich() {
-    let errors = [];
-    if(!STATE.currentSandwich.bread) errors.push("Pão");
-    if(!STATE.currentSandwich.protein) errors.push("Proteína");
-    if(STATE.currentSandwich.salads.length === 0) errors.push("Pelo menos 1 salada");
-    if(!STATE.currentSandwich.sauce) errors.push("Molho");
-    return errors;
-}
-
-function validateCheckoutForm() {
-    const name = document.getElementById('customer-name').value.trim();
-    if(!name) return "Por favor, informe seu Nome Completo.";
-
-    if(STATE.orderMethod === 'delivery') {
-        const city = document.getElementById('customer-city').value;
+    function validateCheckoutForm() {
+      const name = document.getElementById('customer-name').value.trim();
+      if (!name) return 'Não finalizei: faltou preencher o nome completo.';
+      if (STATE.orderMethod === 'delivery') {
         const hood = document.getElementById('customer-neighborhood').value.trim();
         const street = document.getElementById('customer-street').value.trim();
         const number = document.getElementById('customer-number').value.trim();
-        
-        if(!city || !hood || !street || !number) {
-            return "Preencha todos os campos obrigatórios do Endereço (Bairro, Rua, Número).";
+        if (!hood) return 'Não finalizei: faltou preencher o bairro.';
+        if (!street) return 'Não finalizei: faltou preencher a rua/avenida.';
+        if (!number) return 'Não finalizei: faltou preencher o número do endereço.';
+      }
+      return null;
+    }
+
+    function openConfirmationModal() {
+      if (!CONFIG.STORE_OPEN) return showToast('Loja fechada no momento.', 'error');
+      if (getTotalItemsCount() === 0) {
+        if (hasStartedSandwich()) return showToast('Não finalizei: você começou um lanche, mas ainda não adicionou ao carrinho.', 'warning');
+        return showToast('Não finalizei: o carrinho está vazio.', 'error');
+      }
+      const validationError = validateCheckoutForm();
+      if (validationError) { showToast(validationError, 'error'); document.querySelector('section:last-of-type').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+      document.getElementById('modal-total-value').innerText = formatCurrency(calculateCartTotals().grandTotal);
+      const modal = document.getElementById('confirm-modal');
+      const content = document.getElementById('modal-content');
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+      setTimeout(() => { content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+    }
+
+    function closeConfirmationModal() {
+      const modal = document.getElementById('confirm-modal');
+      const content = document.getElementById('modal-content');
+      content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 250);
+    }
+
+    function executeFinalOrder() {
+      const validationError = validateCheckoutForm();
+      if (validationError) return showToast(validationError, 'error');
+      closeConfirmationModal();
+
+      const name = getValue('customer-name');
+      const city = getValue('customer-city');
+      const hood = getValue('customer-neighborhood');
+      const street = getValue('customer-street');
+      const number = getValue('customer-number');
+      const comp = getValue('customer-complement');
+      const notes = getValue('customer-notes');
+      const totals = calculateCartTotals();
+
+      let msg = '*PEDIDO FITBAÊ* 🥗\n';
+      msg += '-----------------------------------\n\n';
+      msg += `👤 *CLIENTE:* ${name}\n`;
+      msg += `📍 *TIPO:* ${STATE.orderMethod === 'delivery' ? 'Entrega 🛵' : 'Retirar no local 🏪'}\n`;
+      if (STATE.orderMethod === 'delivery') {
+        msg += `🏠 *ENDEREÇO:* ${street}, Nº ${number} - ${hood}, ${city}\n`;
+        if (comp) msg += `📌 *REFERÊNCIA:* ${comp}\n`;
+      }
+      if (notes) msg += `\n📝 *OBSERVAÇÕES:* ${notes}\n`;
+      msg += '\n-----------------------------------\n\n🛍️ *ITENS DO PEDIDO*\n\n';
+
+      STATE.cart.sandwiches.forEach((s, idx) => {
+        msg += `*🥪 Lanche ${idx + 1}* - ${formatCurrency(s.subtotal)}\n`;
+        msg += `├ Base: ${s.bread.name}\n├ Proteína: ${s.protein.name}\n├ Saladas: ${s.salads.map(x => x.name).join(', ')}\n├ Molho: ${s.sauce.name}\n`;
+        if (s.cheese) msg += `├ Queijo: ${s.cheese.name}\n`;
+        if (s.extraProteins.length) msg += `├ Proteína extra: ${s.extraProteins.map(x => x.name).join(', ')}\n`;
+        if (s.extraSauces.length) msg += `├ Molho extra: ${s.extraSauces.map(x => x.name).join(', ')}\n`;
+        if (s.premium.length) msg += `├ Premium: ${s.premium.map(x => x.name).join(', ')}\n`;
+        msg += '\n';
+      });
+
+      const drinks = groupItems(STATE.cart.drinks);
+      if (Object.keys(drinks).length) {
+        msg += '*🥤 Bebidas*\n';
+        Object.values(drinks).forEach(({ item, count }) => { msg += `├ ${count}x ${item.name}\n`; });
+        msg += '\n';
+      }
+
+      msg += '-----------------------------------\n\n';
+      msg += '💵 *RESUMO FINANCEIRO*\n';
+      msg += `Subtotal: ${formatCurrency(totals.subtotal)}\n`;
+      if (STATE.orderMethod === 'delivery') msg += `Taxa de entrega: ${formatCurrency(totals.delivery)}\n`;
+      msg += `*TOTAL: ${formatCurrency(totals.grandTotal)}*\n\n`;
+      msg += '💳 *PAGAMENTO:* PIX\n';
+      msg += '\nAguardo a confirmação e a chave Pix. Obrigado!';
+
+      const url = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    function hasStartedSandwich() {
+      const s = STATE.currentSandwich;
+      return Boolean(s.bread || s.protein || s.sauce || s.cheese || s.salads.length || s.extraProteins.length || s.extraSauces.length || s.premium.length);
+    }
+
+    function getTotalItemsCount() { return STATE.cart.sandwiches.length + STATE.cart.drinks.length; }
+    function getValue(id) { return document.getElementById(id).value.trim(); }
+    function formatCurrency(value) { return Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+    function cryptoRandomId() { return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now(); }
+    function scrollToCart() { document.getElementById('cart-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    function updateScrollProgress() {
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      document.getElementById('scroll-progress').style.width = height ? `${(scrollTop / height) * 100}%` : '0%';
+    }
+
+    function showToast(message, type = 'info') {
+      const colors = { success: 'bg-green-600', error: 'bg-red-600', warning: 'bg-yellow-500 text-gray-900', info: 'bg-gray-900' };
+      const icons = { success: 'ph-check-circle', error: 'ph-warning-circle', warning: 'ph-warning', info: 'ph-info' };
+      const toast = document.createElement('div');
+      toast.className = `${colors[type] || colors.info} text-white px-4 py-3 rounded-xl shadow-lg text-sm font-bold max-w-md w-full pointer-events-auto animate-slideUp flex items-start gap-2`;
+      toast.innerHTML = `<i class="ph-fill ${icons[type] || icons.info} text-lg mt-0.5"></i><span>${message}</span>`;
+      document.getElementById('toast-container').appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(-8px)'; toast.style.transition = 'all .25s ease'; setTimeout(() => toast.remove(), 250); }, 3600);
+    }
+
+    function saveCartToStorage() {
+      localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify({ cart: STATE.cart, orderMethod: STATE.orderMethod }));
+    }
+
+    function loadCartFromStorage() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY));
+        if (saved?.cart) STATE.cart = { sandwiches: saved.cart.sandwiches || [], drinks: saved.cart.drinks || [] };
+        if (saved?.orderMethod) {
+          STATE.orderMethod = saved.orderMethod;
+          const radio = document.querySelector(`input[name="orderMethod"][value="${STATE.orderMethod}"]`);
+          if (radio) radio.checked = true;
         }
+      } catch (e) {
+        localStorage.removeItem(CONFIG.STORAGE_KEY);
+      }
     }
-
-    if(STATE.paymentMethod === 'dinheiro') {
-        const changeVal = document.getElementById('payment-change').value;
-        if(changeVal) {
-            const totals = calculateCartTotals();
-            if(parseFloat(changeVal) < totals.grandTotal) {
-                return "O valor para troco não pode ser menor que o total do pedido.";
-            }
-        }
-    }
-
-    return null; // Valid
-}
-
-function openConfirmationModal() {
-    if(!CONFIG.STORE_OPEN) return showToast("Loja fechada", "error");
-
-    const totalItemsCount = STATE.cart.sandwiches.length + STATE.cart.drinks.length + STATE.cart.desserts.length;
-    
-    // Check if there's a sandwich halfway built
-    const hasStartedSandwich = STATE.currentSandwich.bread || STATE.currentSandwich.protein || STATE.currentSandwich.sauce || STATE.currentSandwich.salads.length > 0;
-    
-    if(totalItemsCount === 0) {
-        if(hasStartedSandwich) {
-            return showToast("Adicione o lanche que você está montando ao carrinho antes de finalizar!", "warning");
-        }
-        return showToast("Seu carrinho está vazio.", "error");
-    }
-
-    const validationError = validateCheckoutForm();
-    if(validationError) {
-        showToast(validationError, "error");
-        // Scroll to form
-        document.getElementById('customer-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-    }
-
-    const totals = calculateCartTotals();
-    document.getElementById('modal-total-value').innerText = formatCurrency(totals.grandTotal);
-    
-    let paymentText = "";
-    if(STATE.paymentMethod === 'pix') paymentText = "PIX";
-    if(STATE.paymentMethod === 'cartao') paymentText = "Cartão (Máquina)";
-    if(STATE.paymentMethod === 'dinheiro') {
-        const change = document.getElementById('payment-change').value;
-        paymentText = change ? `Dinheiro (Troco para R$ ${change})` : "Dinheiro (Sem troco)";
-    }
-    document.getElementById('modal-payment-text').innerText = paymentText;
-
-    const modal = document.getElementById('confirm-modal');
-    const content = document.getElementById('modal-content');
-    
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    
-    // Small delay for animation
-    setTimeout(() => {
-        content.classList.remove('scale-95', 'opacity-0');
-        content.classList.add('scale-100', 'opacity-100');
-    }, 10);
-}
-
-function closeConfirmationModal() {
-    const modal = document.getElementById('confirm-modal');
-    const content = document.getElementById('modal-content');
-    
-    content.classList.remove('scale-100', 'opacity-100');
-    content.classList.add('scale-95', 'opacity-0');
-    
-    setTimeout(() => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }, 300);
-}
-
-function executeFinalOrder() {
-    closeConfirmationModal();
-
-    const name = document.getElementById('customer-name').value.trim();
-    const city = document.getElementById('customer-city').value;
-    const hood = document.getElementById('customer-neighborhood').value.trim();
-    const street = document.getElementById('customer-street').value.trim();
-    const number = document.getElementById('customer-number').value.trim();
-    const comp = document.getElementById('customer-complement').value.trim();
-    const notes = document.getElementById('customer-notes').value.trim();
-    const totals = calculateCartTotals();
-
-    // Construct WhatsApp Message
-    let msg = `*PEDIDO FITBAÊ* 🥗\n`;
-    msg += `-----------------------------------\n\n`;
-
-    // 1. Customer Data
-    msg += `👤 *CLIENTE:* ${name}\n`;
-    msg += `📍 *TIPO:* ${STATE.orderMethod === 'delivery' ? 'Entrega 🛵' : 'Retirar no local 🏪'}\n`;
-    
-    if(STATE.orderMethod === 'delivery') {
-        msg += `Endereço: ${street}, Nº ${number} - ${hood}, ${city}\n`;
-        if(comp) msg += `Complemento/Ref: ${comp}\n`;
-    }
-    
-    if(notes) msg += `\n📝 *OBSERVAÇÕES:* ${notes}\n`;
-    msg += `\n-----------------------------------\n\n`;
-
-    // 2. Items
-    msg += `🛍️ *ITENS DO PEDIDO*\n\n`;
-
-    if(STATE.cart.sandwiches.length > 0) {
-        STATE.cart.sandwiches.forEach((s, idx) => {
-            msg += `*🥪 Lanche ${idx + 1}* - ${formatCurrency(s.subtotal)}\n`;
-            msg += `├ Base: ${s.bread.name}\n`;
-            msg += `├ Prot: ${s.protein.name}\n`;
-            msg += `├ Salada: ${s.salads.map(x=>x.name).join(', ')}\n`;
-            msg += `├ Molho: ${s.sauce.name}\n`;
-            
-            if(s.cheese) msg += `├ *Queijo:* ${s.cheese.name}\n`;
-            if(s.extraProteins.length) msg += `├ *Extra Prot:* ${s.extraProteins.map(x=>x.name).join(', ')}\n`;
-            if(s.extraSauces.length) msg += `├ *Extra Molho:* ${s.extraSauces.map(x=>x.name).join(', ')}\n`;
-            if(s.premium.length) msg += `├ *Premium:* ${s.premium.map(x=>x.name).join(', ')}\n`;
-            msg += `\n`;
-        });
-    }
-
-    const dCounts = countItems(STATE.cart.drinks);
-    const hasDrinks = Object.keys(dCounts).length > 0;
-    if(hasDrinks) {
-        msg += `*🥤 Bebidas*\n`;
-        for(let id in dCounts) {
-            msg += `├ ${dCounts[id].count}x ${dCounts[id].item.name}\n`;
-        }
-        msg += `\n`;
-    }
-
-    const dsCounts = countItems(STATE.cart.desserts);
-    const hasDesserts = Object.keys(dsCounts).length > 0;
-    if(hasDesserts) {
-        msg += `*🍰 Sobremesas*\n`;
-        for(let id in dsCounts) {
-            msg += `├ ${dsCounts[id].count}x ${dsCounts[id].item.name}\n`;
-        }
-        msg += `\n`;
-    }
-
-    msg += `-----------------------------------\n\n`;
-
-    // 3. Totals & Payment
-    msg += `💵 *RESUMO FINANCEIRO*\n`;
-    msg += `Subtotal: ${formatCurrency(totals.subtotal)}\n`;
-    if(STATE.orderMethod === 'delivery') {
-        msg += `Taxa de Entrega: ${formatCurrency(totals.delivery)}\n`;
-    }
-    msg += `*TOTAL: ${formatCurrency(totals.grandTotal)}*\n\n`;
-
-    msg += `💳 *PAGAMENTO:* `;
-    if(STATE.paymentMethod === 'pix') msg += `PIX (Aguardo a chave)\n`;
-    if(STATE.paymentMethod === 'cartao') msg += `Cartão (Levar maquininha)\n`;
-    if(STATE.paymentMethod === 'dinheiro') {
-        const change = document.getElementById('payment-change').value;
-        if(change) {
-            msg += `Dinheiro (Troco para R$ ${change})\n`;
-        } else {
-            msg += `Dinheiro (Sem necessidade de troco)\n`;
-        }
-    }
-
-    // Send
-    const encodedMsg = encodeURIComponent(msg);
-    const url = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodedMsg}`;
-    window.open(url, '_blank');
-
-    // Optionally clear cart after successful redirect
-    // STATE.cart = { sandwiches: [], drinks: [], desserts: [] };
-    // saveCartToStorage();
-    // updateGlobalUI();
-}
-
-// ==========================================
-// UTILITIES (Storage, UI feedback, scroll)
-// ==========================================
-
-function saveCartToStorage() {
-    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(STATE.cart));
-}
-
-function loadCartFromStorage() {
-    try {
-        const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
-        if(saved) {
-            const parsed = JSON.parse(saved);
-            if(parsed && typeof parsed === 'object') {
-                STATE.cart.sandwiches = parsed.sandwiches || [];
-                STATE.cart.drinks = parsed.drinks || [];
-                STATE.cart.desserts = parsed.desserts || [];
-            }
-        }
-    } catch (e) {
-        console.error("Failed to load cart from storage", e);
-    }
-}
-
-function scrollToCart() {
-    document.getElementById('cart-anchor').scrollIntoView({ behavior: 'smooth' });
-}
-
-function disableAllInteractions() {
-    const buttons = document.querySelectorAll('button:not(.close-modal)');
-    buttons.forEach(btn => {
-        btn.disabled = true;
-        btn.classList.add('opacity-50', 'cursor-not-allowed');
-    });
-}
-
-function updateScrollProgress() {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    document.getElementById("scroll-progress").style.width = scrolled + "%";
-}
-
-/**
- * Modern Toast Notification System
- * @param {string} message - Text to display
- * @param {string} type - 'success', 'error', 'info', 'warning'
- */
-function showToast(message, type = 'info') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    
-    // Style configurations based on type
-    let bg = 'bg-gray-800';
-    let icon = '<i class="ph ph-info text-blue-400"></i>';
-    
-    if(type === 'success') {
-        bg = 'bg-fitgreen-dark';
-        icon = '<i class="ph-fill ph-check-circle text-green-400"></i>';
-    } else if(type === 'error') {
-        bg = 'bg-red-600';
-        icon = '<i class="ph-fill ph-warning-circle text-white"></i>';
-    } else if(type === 'warning') {
-        bg = 'bg-yellow-500';
-        icon = '<i class="ph-fill ph-warning text-yellow-900"></i>';
-    }
-
-    toast.className = `${bg} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-medium animate-slide-up transform pointer-events-auto max-w-sm w-full`;
-    toast.innerHTML = `
-        <span class="text-xl shrink-0">${icon}</span>
-        <span class="flex-1 whitespace-pre-line">${message}</span>
-        <button onclick="this.parentElement.remove()" class="text-white/70 hover:text-white p-1">
-            <i class="ph ph-x"></i>
-        </button>
-    `;
-
-    container.appendChild(toast);
-
-    // Auto remove after 4 seconds
-    setTimeout(() => {
-        if(document.body.contains(toast)) {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(-20px)';
-            toast.style.transition = 'all 0.3s ease';
-            setTimeout(() => toast.remove(), 300);
-        }
-    }, 4000);
-}
-
-</script>
+  </script>
 </body>
 </html>
